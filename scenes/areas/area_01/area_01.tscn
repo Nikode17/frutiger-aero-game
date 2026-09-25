@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_shell.gd" id="1_shell"]
+[ext_resource type="Script" path="res://scenes/areas/area_01/room_window.gd" id="1_window"]
 [ext_resource type="Shader" path="res://assets/shaders/leaf_floor.gdshader" id="2_leaf"]
 [ext_resource type="Shader" path="res://assets/shaders/aero_wall.gdshader" id="3_wall"]
 [ext_resource type="Shader" path="res://assets/shaders/aero_sky.gdshader" id="4_sky"]
@@ -26,11 +27,36 @@ clearcoat_enabled = true
 clearcoat = 1.0
 clearcoat_roughness = 0.05
 
+[sub_resource type="Resource" id="Resource_window_living"]
+script = ExtResource("1_window")
+enabled = true
+angle_deg = 225.0
+center_height = 1.9
+radius = Vector2(1.5, 1.55)
+frame_radius = 0.28
+
+[sub_resource type="Resource" id="Resource_window_back"]
+script = ExtResource("1_window")
+enabled = true
+angle_deg = 285.0
+center_height = 1.7
+radius = Vector2(0.7, 1.0)
+frame_radius = 0.22
+
+[sub_resource type="Resource" id="Resource_window_side"]
+script = ExtResource("1_window")
+enabled = true
+angle_deg = 340.0
+center_height = 1.7
+radius = Vector2(0.75, 1.05)
+frame_radius = 0.22
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sky"]
 shader = ExtResource("4_sky")
 
 [sub_resource type="Sky" id="Sky_area"]
 sky_material = SubResource("ShaderMaterial_sky")
+radiance_size = 3
 
 [sub_resource type="Environment" id="Environment_area"]
 background_mode = 2
@@ -62,6 +88,28 @@ glow_hdr_scale = 2.0
 adjustment_enabled = true
 adjustment_saturation = 1.1
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_placeholder"]
+albedo_color = Color(0.6, 0.62, 0.65, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="BoxMesh_sculpture"]
+size = Vector3(1.4, 2.2, 1.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sculpture"]
+size = Vector3(1.4, 2.2, 1.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_living"]
+size = Vector3(3.4, 0.7, 2.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_living"]
+size = Vector3(3.4, 0.7, 2.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_desk"]
+size = Vector3(1.0, 0.75, 3.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_desk"]
+size = Vector3(1.0, 0.75, 3.8)
+
 [node name="Area01" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -73,14 +121,14 @@ light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 1.8
 shadow_enabled = true
 shadow_blur = 1.5
-directional_shadow_max_distance = 40.0
+directional_shadow_max_distance = 50.0
 
 [node name="FillLight" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0)
 light_color = Color(0.6, 0.9, 1, 1)
 light_energy = 0.8
 light_specular = 0.0
-omni_range = 14.0
+omni_range = 18.0
 
 [node name="RoomShell" type="Node3D" parent="."]
 script = ExtResource("1_shell")
@@ -88,12 +136,72 @@ floor_material = SubResource("ShaderMaterial_floor")
 wall_material = SubResource("ShaderMaterial_wall")
 rim_material = SubResource("StandardMaterial3D_rim")
 frame_material = SubResource("StandardMaterial3D_frame")
+windows = Array[ExtResource("1_window")]([SubResource("Resource_window_living"), SubResource("Resource_window_back"), SubResource("Resource_window_side")])
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
-size = Vector3(12.5, 4.8, 10.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 2.4, -0.5)
+size = Vector3(18, 5.4, 17)
 box_projection = true
 interior = true
 
 [node name="SpawnPoint" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 2.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.05, 5.2)
+
+[node name="Placeholders" type="Node3D" parent="."]
+
+[node name="Sculpture" type="StaticBody3D" parent="Placeholders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholders/Sculpture"]
+mesh = SubResource("BoxMesh_sculpture")
+surface_material_override/0 = SubResource("StandardMaterial3D_placeholder")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholders/Sculpture"]
+shape = SubResource("BoxShape3D_sculpture")
+
+[node name="Label3D" type="Label3D" parent="Placeholders/Sculpture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+pixel_size = 0.006
+billboard = 1
+modulate = Color(0.2, 0.28, 0.35, 1)
+text = "ESCULTURA"
+font_size = 72
+outline_size = 8
+
+[node name="Living" type="StaticBody3D" parent="Placeholders"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -6.4, 0.35, -6.4)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholders/Living"]
+mesh = SubResource("BoxMesh_living")
+surface_material_override/0 = SubResource("StandardMaterial3D_placeholder")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholders/Living"]
+shape = SubResource("BoxShape3D_living")
+
+[node name="Label3D" type="Label3D" parent="Placeholders/Living"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+pixel_size = 0.006
+billboard = 1
+modulate = Color(0.2, 0.28, 0.35, 1)
+text = "LIVING"
+font_size = 72
+outline_size = 8
+
+[node name="Computers" type="StaticBody3D" parent="Placeholders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.9, 0.375, -2.6)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholders/Computers"]
+mesh = SubResource("BoxMesh_desk")
+surface_material_override/0 = SubResource("StandardMaterial3D_placeholder")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholders/Computers"]
+shape = SubResource("BoxShape3D_desk")
+
+[node name="Label3D" type="Label3D" parent="Placeholders/Computers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+pixel_size = 0.006
+billboard = 1
+modulate = Color(0.2, 0.28, 0.35, 1)
+text = "ORDENADORES"
+font_size = 72
+outline_size = 8

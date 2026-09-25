@@ -4,12 +4,15 @@
 shader_type spatial;
 render_mode cull_back;
 
-uniform vec3 base_color : source_color = vec3(0.88, 0.96, 1.0);
+uniform vec3 base_color : source_color = vec3(0.80, 0.92, 0.98);
 uniform vec3 leaf_color : source_color = vec3(0.40, 0.86, 0.42);
 uniform vec3 vein_color : source_color = vec3(0.78, 0.98, 0.72);
-uniform float roughness_value : hint_range(0.0, 1.0) = 0.06;
-uniform float leaf_roughness : hint_range(0.0, 1.0) = 0.16;
-uniform float specular_value : hint_range(0.0, 1.0) = 0.7;
+uniform float roughness_value : hint_range(0.0, 1.0) = 0.03;
+uniform float leaf_roughness : hint_range(0.0, 1.0) = 0.08;
+uniform float specular_value : hint_range(0.0, 1.0) = 1.0;
+// Algo de metallic hace que el suelo refleje el entorno como un pulido de verdad
+// (con specular solo, un dieléctrico refleja apenas un 4-8 %).
+uniform float metallic_value : hint_range(0.0, 1.0) = 0.45;
 
 uniform float cell_size = 1.25;          // metros por celda de la rejilla
 uniform float leaf_half_length = 0.46;   // semi-longitud de la hoja (m)
@@ -92,7 +95,7 @@ void fragment() {
 	col = mix(col, vein_color, vein);
 
 	ALBEDO = col;
-	METALLIC = 0.0;
+	METALLIC = metallic_value;
 	ROUGHNESS = mix(roughness_value, leaf_roughness, leaf);
 	SPECULAR = specular_value;
 }
