@@ -36,6 +36,7 @@ CREDITS.md             # autor, fuente y licencia de cada asset externo
 - Comentarios breves en español.
 - Nada de rutas absolutas: siempre `res://`.
 - Controles definidos en el Input Map de `project.godot`, nunca teclas hardcodeadas.
+- Nunca escalar nodos de física (StaticBody3D, CharacterBody3D, RigidBody3D, Area3D); el tamaño se ajusta en la malla y en la forma de colisión.
 
 ## Forma de trabajar
 - Trabajo por fases. Al terminar cada fase: resumen de lo hecho, cómo probarlo y **esperar confirmación de Tommy** antes de seguir.

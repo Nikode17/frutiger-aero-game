@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -38,9 +38,35 @@ size = Vector3(100, 1, 100)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cube"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_cube2"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cube2"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cube3"]
+size = Vector3(3, 0.5, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cube3"]
+size = Vector3(3, 0.5, 3)
+
 [sub_resource type="SphereMesh" id="SphereMesh_ball"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ball"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_ball2"]
+radius = 0.75
+height = 1.5
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ball2"]
+radius = 0.75
+
+[sub_resource type="SphereMesh" id="SphereMesh_ball3"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ball3"]
+radius = 0.3
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
@@ -76,24 +102,24 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ref")
 shape = SubResource("BoxShape3D_cube")
 
 [node name="Cube2" type="StaticBody3D" parent="References"]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -6, 1, -10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1, -10)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="References/Cube2"]
-mesh = SubResource("BoxMesh_cube")
+mesh = SubResource("BoxMesh_cube2")
 surface_material_override/0 = SubResource("StandardMaterial3D_ref")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="References/Cube2"]
-shape = SubResource("BoxShape3D_cube")
+shape = SubResource("BoxShape3D_cube2")
 
 [node name="Cube3" type="StaticBody3D" parent="References"]
-transform = Transform3D(3, 0, 0, 0, 0.5, 0, 0, 0, 3, 10, 0.25, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.25, 4)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="References/Cube3"]
-mesh = SubResource("BoxMesh_cube")
+mesh = SubResource("BoxMesh_cube3")
 surface_material_override/0 = SubResource("StandardMaterial3D_ref")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="References/Cube3"]
-shape = SubResource("BoxShape3D_cube")
+shape = SubResource("BoxShape3D_cube3")
 
 [node name="Cube4" type="StaticBody3D" parent="References"]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -12, 0.5, 8)
@@ -116,24 +142,24 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ref")
 shape = SubResource("SphereShape3D_ball")
 
 [node name="Sphere2" type="StaticBody3D" parent="References"]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 14, 0.75, -8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0.75, -8)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="References/Sphere2"]
-mesh = SubResource("SphereMesh_ball")
+mesh = SubResource("SphereMesh_ball2")
 surface_material_override/0 = SubResource("StandardMaterial3D_ref")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="References/Sphere2"]
-shape = SubResource("SphereShape3D_ball")
+shape = SubResource("SphereShape3D_ball2")
 
 [node name="Sphere3" type="StaticBody3D" parent="References"]
-transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -4, 0.3, 14)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.3, 14)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="References/Sphere3"]
-mesh = SubResource("SphereMesh_ball")
+mesh = SubResource("SphereMesh_ball3")
 surface_material_override/0 = SubResource("StandardMaterial3D_ref")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="References/Sphere3"]
-shape = SubResource("SphereShape3D_ball")
+shape = SubResource("SphereShape3D_ball3")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)

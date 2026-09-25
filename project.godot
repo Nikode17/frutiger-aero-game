@@ -66,5 +66,4 @@ release_mouse={
 
 [rendering]
 
-renderer/rendering_method="forward_plus"
 anti_aliasing/quality/msaa_3d=2
