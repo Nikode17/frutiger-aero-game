@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/area_01/desk.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_segment"]
+size = Vector3(1.15, 0.8, 0.72)
+
+[node name="Desk" type="StaticBody3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision0" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.812084, 0, 0.583541, 0, 1, 0, -0.583541, 0, 0.812084, -1.9860, 0.4000, 0.6590)
+shape = SubResource("BoxShape3D_segment")
+
+[node name="Collision1" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.950516, 0, 0.310676, 0, 1, 0, -0.310676, 0, 0.950516, -1.0640, 0.4000, 0.1720)
+shape = SubResource("BoxShape3D_segment")
+
+[node name="Collision2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, 0.0000, 0.4000, 0.0090)
+shape = SubResource("BoxShape3D_segment")
+
+[node name="Collision3" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.950516, 0, -0.310676, 0, 1, 0, 0.310676, 0, 0.950516, 1.0610, 0.4000, 0.1680)
+shape = SubResource("BoxShape3D_segment")
+
+[node name="Collision4" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.816138, 0, -0.577858, 0, 1, 0, 0.577858, 0, 0.816138, 1.9780, 0.4000, 0.6530)
+shape = SubResource("BoxShape3D_segment")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_shell.gd" id="1_shell"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_window.gd" id="1_window"]
@@ -7,6 +7,7 @@
 [ext_resource type="Shader" path="res://assets/shaders/aero_sky.gdshader" id="4_sky"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/water_column.tscn" id="5_column"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/living.tscn" id="6_living"]
+[ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/computers.tscn" id="7_computers"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
 shader = ExtResource("2_leaf")
@@ -90,16 +91,6 @@ glow_hdr_scale = 2.0
 adjustment_enabled = true
 adjustment_saturation = 1.1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_placeholder"]
-albedo_color = Color(0.6, 0.62, 0.65, 1)
-roughness = 0.7
-
-[sub_resource type="BoxMesh" id="BoxMesh_desk"]
-size = Vector3(1.0, 0.75, 3.8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_desk"]
-size = Vector3(1.0, 0.75, 3.8)
-
 [node name="Area01" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -142,23 +133,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.05, 5.2)
 [node name="Living" parent="." instance=ExtResource("6_living")]
 transform = Transform3D(0.309017, 0, -0.951057, 0, 1, 0, 0.951057, 0, 0.309017, 4.8504, 0, -1.576)
 
-[node name="Placeholders" type="Node3D" parent="."]
-
-[node name="Computers" type="StaticBody3D" parent="Placeholders"]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -8.6, 0.375, -8.6)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholders/Computers"]
-mesh = SubResource("BoxMesh_desk")
-surface_material_override/0 = SubResource("StandardMaterial3D_placeholder")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholders/Computers"]
-shape = SubResource("BoxShape3D_desk")
-
-[node name="Label3D" type="Label3D" parent="Placeholders/Computers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
-pixel_size = 0.006
-billboard = 1
-modulate = Color(0.2, 0.28, 0.35, 1)
-text = "ORDENADORES"
-font_size = 72
-outline_size = 8
+[node name="Computers" parent="." instance=ExtResource("7_computers")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -5.937989, 0, -5.937989)

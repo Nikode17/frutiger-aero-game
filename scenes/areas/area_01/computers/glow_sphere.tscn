@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/area_01/glow_sphere.glb" id="1_model"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_sphere"]
+radius = 0.29
+
+[node name="GlowSphere" type="StaticBody3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29, 0)
+shape = SubResource("SphereShape3D_sphere")
+
+[node name="GlowLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29, 0)
+light_color = Color(0.4, 1, 0.5, 1)
+light_energy = 1.0
+light_specular = 0.3
+omni_range = 1.5
+omni_attenuation = 1.6

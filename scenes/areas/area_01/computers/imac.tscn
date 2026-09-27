@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/area_01/imac.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_imac"]
+size = Vector3(0.39, 0.41, 0.45)
+
+[node name="Imac" type="StaticBody3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.205, 0)
+shape = SubResource("BoxShape3D_imac")
+
+[node name="ScreenGlow" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.27, 0.35)
+light_color = Color(0.5, 0.8, 1, 1)
+light_energy = 0.5
+light_specular = 0.0
+omni_range = 1.3
