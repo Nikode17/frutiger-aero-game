@@ -2,16 +2,16 @@
 // esponjosas con ruido fBm (sin texturas). Menos octavas en el paso de cubemap.
 shader_type sky;
 
-uniform vec3 top_color : source_color = vec3(0.16, 0.46, 0.94);
-uniform vec3 horizon_color : source_color = vec3(0.70, 0.88, 1.0);
+uniform vec3 top_color : source_color = vec3(0.06, 0.32, 0.9);
+uniform vec3 horizon_color : source_color = vec3(0.62, 0.85, 1.0);
 uniform vec3 ground_color : source_color = vec3(0.62, 0.84, 0.94);
-uniform float horizon_sharpness : hint_range(0.1, 3.0) = 0.65;
+uniform float horizon_sharpness : hint_range(0.1, 3.0) = 0.55;
 
 uniform vec3 cloud_color : source_color = vec3(1.0, 1.0, 1.0);
-uniform vec3 cloud_shade_color : source_color = vec3(0.74, 0.86, 0.98);
-uniform float cloud_coverage : hint_range(0.0, 1.0) = 0.46;
-uniform float cloud_softness : hint_range(0.01, 0.6) = 0.2;
-uniform float cloud_scale = 1.4;
+uniform vec3 cloud_shade_color : source_color = vec3(0.68, 0.82, 0.97);
+uniform float cloud_coverage : hint_range(0.0, 1.0) = 0.5;
+uniform float cloud_softness : hint_range(0.01, 0.6) = 0.1;
+uniform float cloud_scale = 0.75;
 uniform float cloud_speed = 0.012;
 
 uniform float sun_size : hint_range(0.0, 0.2) = 0.015;

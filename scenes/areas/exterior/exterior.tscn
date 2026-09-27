@@ -1,0 +1,28 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scenes/areas/exterior/exterior_terrain.gd" id="1_terrain"]
+[ext_resource type="Script" path="res://scenes/areas/exterior/exterior_vegetation.gd" id="2_vegetation"]
+[ext_resource type="Script" path="res://scenes/areas/exterior/exterior_city.gd" id="3_city"]
+[ext_resource type="Script" path="res://scenes/areas/exterior/exterior_life.gd" id="4_life"]
+[ext_resource type="Material" path="res://assets/models/exterior/materials/exterior_terrain.tres" id="5_terrain_mat"]
+[ext_resource type="Material" path="res://assets/models/exterior/materials/exterior_grass.tres" id="6_grass_mat"]
+[ext_resource type="Material" path="res://assets/models/exterior/materials/exterior_flower.tres" id="7_flower_mat"]
+[ext_resource type="Material" path="res://assets/models/exterior/materials/exterior_glass_tower.tres" id="8_glass_mat"]
+
+[node name="Exterior" type="Node3D"]
+
+[node name="Terrain" type="Node3D" parent="."]
+script = ExtResource("1_terrain")
+terrain_material = ExtResource("5_terrain_mat")
+
+[node name="Vegetation" type="Node3D" parent="."]
+script = ExtResource("2_vegetation")
+grass_material = ExtResource("6_grass_mat")
+flower_material = ExtResource("7_flower_mat")
+
+[node name="City" type="Node3D" parent="."]
+script = ExtResource("3_city")
+glass_material = ExtResource("8_glass_mat")
+
+[node name="Life" type="Node3D" parent="."]
+script = ExtResource("4_life")

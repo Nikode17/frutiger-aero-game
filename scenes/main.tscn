@@ -1,12 +1,15 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://uya581g0v3kb"]
 
-[ext_resource type="Script" path="res://scenes/main.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://cahdr3okvwbj3" path="res://scenes/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/area_01.tscn" id="3_area"]
+[ext_resource type="PackedScene" path="res://scenes/areas/exterior/exterior.tscn" id="4_exterior"]
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1471286658]
 script = ExtResource("1_main")
 
-[node name="Area01" parent="." instance=ExtResource("3_area")]
+[node name="Area01" parent="." unique_id=864718069 instance=ExtResource("3_area")]
 
-[node name="Player" parent="." instance=ExtResource("2_player")]
+[node name="Exterior" parent="." instance=ExtResource("4_exterior")]
+
+[node name="Player" parent="." unique_id=9267178 instance=ExtResource("2_player")]

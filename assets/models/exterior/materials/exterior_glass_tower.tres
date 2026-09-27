@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/exterior_glass_tower.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "exterior_glass_tower"
+shader = ExtResource("1_shader")
+shader_parameter/haze_max = 0.5
+shader_parameter/glass_color = Color(0.04, 0.24, 0.66, 1)
+shader_parameter/reflection_strength = 0.8
