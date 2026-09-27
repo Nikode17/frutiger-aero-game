@@ -1,10 +1,11 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_shell.gd" id="1_shell"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_window.gd" id="1_window"]
 [ext_resource type="Shader" path="res://assets/shaders/leaf_floor.gdshader" id="2_leaf"]
 [ext_resource type="Shader" path="res://assets/shaders/aero_wall.gdshader" id="3_wall"]
 [ext_resource type="Shader" path="res://assets/shaders/aero_sky.gdshader" id="4_sky"]
+[ext_resource type="PackedScene" path="res://scenes/areas/area_01/water_column.tscn" id="5_column"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
 shader = ExtResource("2_leaf")
@@ -92,12 +93,6 @@ adjustment_saturation = 1.1
 albedo_color = Color(0.6, 0.62, 0.65, 1)
 roughness = 0.7
 
-[sub_resource type="BoxMesh" id="BoxMesh_sculpture"]
-size = Vector3(1.4, 2.2, 1.4)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_sculpture"]
-size = Vector3(1.4, 2.2, 1.4)
-
 [sub_resource type="BoxMesh" id="BoxMesh_living"]
 size = Vector3(3.4, 0.7, 2.4)
 
@@ -147,26 +142,9 @@ interior = true
 [node name="SpawnPoint" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.05, 5.2)
 
+[node name="WaterColumn" parent="." instance=ExtResource("5_column")]
+
 [node name="Placeholders" type="Node3D" parent="."]
-
-[node name="Sculpture" type="StaticBody3D" parent="Placeholders"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholders/Sculpture"]
-mesh = SubResource("BoxMesh_sculpture")
-surface_material_override/0 = SubResource("StandardMaterial3D_placeholder")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholders/Sculpture"]
-shape = SubResource("BoxShape3D_sculpture")
-
-[node name="Label3D" type="Label3D" parent="Placeholders/Sculpture"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-pixel_size = 0.006
-billboard = 1
-modulate = Color(0.2, 0.28, 0.35, 1)
-text = "ESCULTURA"
-font_size = 72
-outline_size = 8
 
 [node name="Living" type="StaticBody3D" parent="Placeholders"]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.2, 0.35, -2.4)
