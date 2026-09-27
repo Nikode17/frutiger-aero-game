@@ -5,7 +5,7 @@ extends Node3D
 ## esquinas vivas. La planta es una B-spline cúbica cerrada que sigue una superelipse y,
 ## en una esquina, forma un entrante con cuello (la zona de ordenadores). El perfil
 ## vertical es un rectángulo redondeado. En algunos tramos la pared forma una "ola"
-## (saliente redondeado hacia dentro a media altura). Genera además la colisión, una
+## (a media altura se curva hacia dentro y sube así hasta el techo). Genera además la colisión, una
 ## copia exterior solo para sombras, el borde del tragaluz y los marcos de ventana.
 ## Los huecos se recortan en aero_wall.gdshader con los mismos parámetros.
 
@@ -280,15 +280,17 @@ func _row_psi(j: int) -> float:
 func _grid_point(i: int, j: int) -> Vector3:
 	var prof := _profile(_row_psi(j))
 	var k := i % segments_around
-	var p := _apply_waves(_plan[k] * prof.x, _plan_theta[k], prof.y)
+	var p := _apply_waves(_plan[k] * prof.x, _plan_theta[k], prof.y, prof.x)
 	return Vector3(p.x, prof.y, p.y)
 
 
 # --- Olas ---------------------------------------------------------------------------
 
 ## Desplaza el punto de la planta hacia dentro (en dirección radial) según las olas.
-func _apply_waves(p: Vector2, theta: float, y: float) -> Vector2:
-	var off := _wave_offset(theta, y)
+## rho es la distancia relativa a la pared (escala horizontal del perfil: 1 en la pared,
+## 0 en el centro del techo o del suelo).
+func _apply_waves(p: Vector2, theta: float, y: float, rho: float) -> Vector2:
+	var off := _wave_offset(theta, y, rho)
 	if off <= 0.0:
 		return p
 	var r := p.length()
@@ -297,8 +299,8 @@ func _apply_waves(p: Vector2, theta: float, y: float) -> Vector2:
 	return p * maxf(r - off, 0.0) / r
 
 
-## Suma de lo que sale la pared por todas las olas en (theta, altura).
-func _wave_offset(theta: float, y: float) -> float:
+## Suma de lo que entra la pared por todas las olas en (theta, altura, rho).
+func _wave_offset(theta: float, y: float, rho: float) -> float:
 	var total := 0.0
 	for w in waves:
 		if w == null or not w.enabled or w.depth <= 0.0:
@@ -313,16 +315,18 @@ func _wave_offset(theta: float, y: float) -> float:
 		var side := (1.0 - u * u) * (1.0 - u * u)
 		# La cresta ondula un poco a lo largo del tramo
 		var crest := w.crest_height + w.crest_variation * sin(PI * d / half)
-		# Perfil vertical asimétrico: sube suave desde abajo y vuelve antes hacia el techo
-		var v := 0.0
+		# Perfil vertical: se curva hacia dentro por debajo de la cresta y a partir de ahí
+		# se mantiene hasta el techo (no vuelve a salir)
+		var vertical := 1.0
 		if y < crest:
-			v = (crest - y) / maxf(w.lower_extent, EPS)
-		else:
-			v = (y - crest) / maxf(w.upper_extent, EPS)
-		if v >= 1.0:
-			continue
-		var vertical := (1.0 - v * v) * (1.0 - v * v)
-		total += w.depth * side * vertical
+			var v := (crest - y) / maxf(w.lower_extent, EPS)
+			if v >= 1.0:
+				continue
+			vertical = (1.0 - v * v) * (1.0 - v * v)
+		# En el techo se desvanece hacia el centro para no tocar el tragaluz
+		var c := clampf((rho - w.ceiling_fade_start) / maxf(w.ceiling_fade_end - w.ceiling_fade_start, EPS), 0.0, 1.0)
+		var ceiling := c * c * (3.0 - 2.0 * c)
+		total += w.depth * side * vertical * ceiling
 	return total
 
 
@@ -349,7 +353,7 @@ func _grid_normal(i: int, j: int) -> Vector3:
 ## Punto de la superficie en la dirección theta (para tubos y marcos).
 func _surface_point(theta: float, psi: float) -> Vector3:
 	var prof := _profile(psi)
-	var p := _apply_waves(_plan_hit(theta) * prof.x, theta, prof.y)
+	var p := _apply_waves(_plan_hit(theta) * prof.x, theta, prof.y, prof.x)
 	return Vector3(p.x, prof.y, p.y)
 
 
