@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/water_column.gd" id="1_column"]
 [ext_resource type="Shader" path="res://assets/shaders/aero_water.gdshader" id="2_water"]
 [ext_resource type="Shader" path="res://assets/shaders/bubble.gdshader" id="3_bubble"]
 [ext_resource type="Shader" path="res://assets/shaders/caustics.gdshader" id="4_caustics"]
+[ext_resource type="Shader" path="res://assets/shaders/bubble_process.gdshader" id="5_bubble_process"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glass"]
 render_priority = 2
@@ -53,3 +54,4 @@ bubble_material = SubResource("ShaderMaterial_bubble")
 cap_material = SubResource("StandardMaterial3D_cap")
 glow_material = SubResource("StandardMaterial3D_glow")
 caustics_material = SubResource("ShaderMaterial_caustics")
+bubble_process_shader = ExtResource("5_bubble_process")

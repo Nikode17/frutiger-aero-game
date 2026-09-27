@@ -27,12 +27,16 @@ extends Node3D
 @export var glow_color: Color = Color(0.3, 0.9, 1.0)
 
 @export_group("Burbujas")
-@export_range(0, 600) var bubble_amount: int = 170
-@export_range(0.05, 3.0, 0.01) var bubble_speed: float = 0.45       # m/s
-@export_range(0.0, 0.9, 0.01) var bubble_speed_variation: float = 0.2
+@export_range(0, 600) var bubble_amount: int = 150
+@export_range(0.05, 3.0, 0.01) var bubble_speed: float = 0.45       # m/s de las más lentas
+@export_range(0.0, 0.9, 0.01) var bubble_speed_variation: float = 0.3
 @export var bubble_min_size: float = 0.05                            # diámetro (m)
 @export var bubble_max_size: float = 0.14
-@export_range(0.0, 1.0, 0.01) var bubble_wobble: float = 0.15        # bamboleo lateral
+@export var bubble_wobble_amplitude: float = 0.04                    # bamboleo lateral (m)
+@export var bubble_wobble_frequency: float = 1.5                     # rad/s
+@export var bubble_fade_in: float = 0.3                              # m desde la base
+@export var bubble_fade_out: float = 0.5                             # m antes del tope
+@export var bubble_process_shader: Shader                            # bubble_process.gdshader
 
 @export_group("Luz")
 @export var light_energy: float = 0.7
@@ -85,7 +89,8 @@ func _build() -> void:
 		wm.set_shader_parameter("water_color", Vector3(water_color.r, water_color.g, water_color.b))
 
 	# Burbujas
-	_build_bubbles(y0 + 0.05, glass_h - 0.1, radius - glass_thickness)
+	# Las burbujas viven entre la base del agua y un poco por debajo del remate superior
+	_build_bubbles(y0 + 0.05, y1 - 0.06 - bubble_max_size * 0.5, radius - glass_thickness)
 
 	# Base y remate: toro + disco de relleno
 	_build_cap("BaseCap", rt, cap_outer, rt)
@@ -179,47 +184,38 @@ func _build_cap(node_name: String, rt: float, outer: float, y: float) -> void:
 	_add_mesh(node_name + "Disc", disc, cap_material, Vector3(0, y, 0), true)
 
 
-func _build_bubbles(y_start: float, travel: float, inner_radius: float) -> void:
+func _build_bubbles(y_bottom: float, y_top: float, inner_radius: float) -> void:
+	var travel := maxf(y_top - y_bottom, 0.1)
 	var particles := GPUParticles3D.new()
 	particles.name = "Bubbles"
-	# Se emite a lo largo de toda la altura: así la columna está llena desde el primer
-	# frame. Las burbujas que superan el remate las recorta el shader (clip_top).
-	particles.position = Vector3(0, y_start + travel * 0.5, 0)
+	# Coordenadas locales: las burbujas siguen a la columna y el shader trabaja
+	# respecto al eje del tubo, con el origen en la base del agua
+	particles.local_coords = true
+	particles.position = Vector3(0, y_bottom, 0)
 	particles.amount = bubble_amount
-	var v_max := bubble_speed * (1.0 + bubble_speed_variation)
-	var v_min := bubble_speed * (1.0 - bubble_speed_variation)
-	particles.lifetime = travel / maxf(v_min, 0.01)
+	# El ciclo real (subida y renacimiento) lo gestiona el shader de proceso con la
+	# altura y la velocidad; la vida del sistema se deja enorme y se emite todo a la vez
+	particles.lifetime = 36000.0
+	particles.explosiveness = 1.0
 	particles.draw_order = GPUParticles3D.DRAW_ORDER_VIEW_DEPTH
-	particles.visibility_aabb = AABB(Vector3(-inner_radius, -travel * 0.5 - 0.1, -inner_radius),
-			Vector3(inner_radius * 2.0, travel * 1.5 + 0.2, inner_radius * 2.0))
+	particles.visibility_aabb = AABB(Vector3(-inner_radius, -0.1, -inner_radius),
+			Vector3(inner_radius * 2.0, travel + 0.2, inner_radius * 2.0))
 
-	var pm := ParticleProcessMaterial.new()
-	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_RING
-	pm.emission_ring_axis = Vector3.UP
-	pm.emission_ring_height = travel
-	pm.emission_ring_radius = inner_radius * 0.7
-	pm.emission_ring_inner_radius = 0.0
-	pm.direction = Vector3.UP
-	pm.spread = 0.0
-	pm.initial_velocity_min = bubble_speed * (1.0 - bubble_speed_variation)
-	pm.initial_velocity_max = v_max
-	pm.gravity = Vector3.ZERO
-	pm.scale_min = bubble_min_size
-	pm.scale_max = bubble_max_size
-	pm.turbulence_enabled = bubble_wobble > 0.0
-	pm.turbulence_noise_strength = bubble_wobble
-	pm.turbulence_noise_scale = 2.0
-	pm.turbulence_noise_speed = Vector3(0.2, 0.1, 0.2)
-	pm.turbulence_noise_speed_random = 0.3
-	pm.turbulence_influence_min = 0.02
-	pm.turbulence_influence_max = 0.05
-	# Aparecer y desvanecerse arriba
-	var gradient := Gradient.new()
-	gradient.offsets = PackedFloat32Array([0.0, 0.08, 0.85, 1.0])
-	gradient.colors = PackedColorArray([Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)])
-	var ramp := GradientTexture1D.new()
-	ramp.gradient = gradient
-	pm.color_ramp = ramp
+	# Radio de nacimiento: interior menos la burbuja más grande y el bamboleo
+	var emit_radius := maxf(inner_radius - bubble_max_size * 0.5 - bubble_wobble_amplitude - 0.01, 0.05)
+	var pm := ShaderMaterial.new()
+	pm.shader = bubble_process_shader
+	pm.set_shader_parameter("travel", travel)
+	pm.set_shader_parameter("base_speed", bubble_speed)
+	pm.set_shader_parameter("speed_variation", bubble_speed_variation)
+	pm.set_shader_parameter("emit_radius", emit_radius)
+	pm.set_shader_parameter("inner_radius", inner_radius)
+	pm.set_shader_parameter("size_min", bubble_min_size)
+	pm.set_shader_parameter("size_max", bubble_max_size)
+	pm.set_shader_parameter("wobble_amplitude", bubble_wobble_amplitude)
+	pm.set_shader_parameter("wobble_frequency", bubble_wobble_frequency)
+	pm.set_shader_parameter("fade_in", bubble_fade_in)
+	pm.set_shader_parameter("fade_out", bubble_fade_out)
 	particles.process_material = pm
 
 	var sphere := SphereMesh.new()
@@ -232,6 +228,7 @@ func _build_bubbles(y_start: float, travel: float, inner_radius: float) -> void:
 		particles.material_override = bubble_material
 		var bm := bubble_material as ShaderMaterial
 		if bm:
-			bm.set_shader_parameter("clip_top", global_position.y + y_start + travel)
+			# Recorte de seguridad en el shader de la malla, justo en el tope de subida
+			bm.set_shader_parameter("clip_top", global_position.y + y_top + 0.01)
 	particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_add_generated(particles)
