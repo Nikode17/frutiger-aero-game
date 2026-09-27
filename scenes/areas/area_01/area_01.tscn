@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_shell.gd" id="1_shell"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_window.gd" id="1_window"]
@@ -9,6 +9,9 @@
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/water_column.tscn" id="5_column"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/living.tscn" id="6_living"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/computers.tscn" id="7_computers"]
+[ext_resource type="Script" path="res://scenes/areas/area_01/computers/aquarium_screen.gd" id="8_screen"]
+[ext_resource type="Material" path="res://assets/models/area_01/materials/living_white.tres" id="9_white"]
+[ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/aquarium/aquarium.tscn" id="10_aquarium"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
 shader = ExtResource("2_leaf")
@@ -45,14 +48,6 @@ enabled = true
 angle_deg = 285.0
 center_height = 1.7
 radius = Vector2(0.7, 1.0)
-frame_radius = 0.22
-
-[sub_resource type="Resource" id="Resource_window_computers"]
-script = ExtResource("1_window")
-enabled = true
-angle_deg = 225.0
-center_height = 1.7
-radius = Vector2(0.75, 1.05)
 frame_radius = 0.22
 
 [sub_resource type="Resource" id="Resource_wave_living"]
@@ -151,7 +146,7 @@ floor_material = SubResource("ShaderMaterial_floor")
 wall_material = SubResource("ShaderMaterial_wall")
 rim_material = SubResource("StandardMaterial3D_rim")
 frame_material = SubResource("StandardMaterial3D_frame")
-windows = Array[ExtResource("1_window")]([SubResource("Resource_window_living"), SubResource("Resource_window_back"), SubResource("Resource_window_computers")])
+windows = Array[ExtResource("1_window")]([SubResource("Resource_window_living"), SubResource("Resource_window_back")])
 waves = Array[ExtResource("1_wave")]([SubResource("Resource_wave_living"), SubResource("Resource_wave_south"), SubResource("Resource_wave_west")])
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
@@ -170,3 +165,15 @@ transform = Transform3D(0.309017, 0, -0.951057, 0, 1, 0, 0.951057, 0, 0.309017, 
 
 [node name="Computers" parent="." instance=ExtResource("7_computers")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -5.937989, 0, -5.937989)
+
+[node name="AquariumScreen" type="Node3D" parent="."]
+script = ExtResource("8_screen")
+frame_material = ExtResource("9_white")
+
+[node name="AquariumViewport" type="SubViewport" parent="AquariumScreen"]
+disable_3d = true
+msaa_2d = 1
+size = Vector2i(1104, 420)
+render_target_update_mode = 4
+
+[node name="Aquarium" parent="AquariumScreen/AquariumViewport" instance=ExtResource("10_aquarium")]
