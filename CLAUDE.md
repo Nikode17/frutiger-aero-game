@@ -52,5 +52,12 @@ CREDITS.md             # autor, fuente y licencia de cada asset externo
 - Si falta un asset (música, textura), dejar un placeholder y avisar de qué archivo hay que poner y dónde.
 - Cada asset externo que se añada se registra en `CREDITS.md`.
 
+## Flujo con Blender
+- Los modelos se crean en Blender vía MCP y se exportan a `.glb` en `assets/models/<area>/`.
+- Los `.blend` fuente se guardan en `assets/models/<area>/source/` (con un `.gdignore` para que Godot no intente importarlos).
+- Escala real en metros; origen del objeto en la base.
+- Los materiales finales (glossy, cristal) se ajustan en Godot para que coincidan con el resto de la sala: `.tres` en `assets/models/<area>/materials/`, asignados como materiales externos en el `.import` del `.glb`.
+- Los assets de Poly Haven u otras fuentes se registran en `CREDITS.md`.
+
 ## Rendimiento
 Objetivo: 60 FPS estables en un portátil gaming. Preferir iluminación sencilla, texturas de 2K como máximo y postprocesado con moderación (bloom sí, pero ajustado).

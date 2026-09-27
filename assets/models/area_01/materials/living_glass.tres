@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "living_glass"
+transparency = 1
+albedo_color = Color(0.7, 0.92, 1, 0.3)
+metallic_specular = 1.0
+roughness = 0.02
+clearcoat_enabled = true
+clearcoat = 1.0
+clearcoat_roughness = 0.02

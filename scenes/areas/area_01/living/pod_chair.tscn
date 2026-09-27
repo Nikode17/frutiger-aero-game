@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/area_01/pod_chair.glb" id="1_model"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_chair"]
+height = 0.9
+radius = 0.46
+
+[node name="PodChair" type="StaticBody3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("CylinderShape3D_chair")

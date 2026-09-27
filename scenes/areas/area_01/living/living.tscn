@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/area_01/living_rug.glb" id="1_rug"]
+[ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/pod_chair.tscn" id="2_chair"]
+[ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/coffee_table.tscn" id="3_table"]
+[ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/living_plant.tscn" id="4_plant"]
+
+[node name="Living" type="Node3D"]
+
+[node name="Rug" parent="." instance=ExtResource("1_rug")]
+
+[node name="ChairLeft" parent="." instance=ExtResource("2_chair")]
+transform = Transform3D(-0.978148, 0, 0.207912, 0, 1, 0, -0.207912, 0, -0.978148, -0.95, 0, 0.35)
+
+[node name="ChairRight" parent="." instance=ExtResource("2_chair")]
+transform = Transform3D(-0.978148, 0, -0.207912, 0, 1, 0, 0.207912, 0, -0.978148, 0.95, 0, 0.35)
+
+[node name="CoffeeTable" parent="." instance=ExtResource("3_table")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+
+[node name="Plant" parent="." instance=ExtResource("4_plant")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.95, 0, -1.0)

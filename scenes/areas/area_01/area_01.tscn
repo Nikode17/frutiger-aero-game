@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_shell.gd" id="1_shell"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_window.gd" id="1_window"]
@@ -6,6 +6,7 @@
 [ext_resource type="Shader" path="res://assets/shaders/aero_wall.gdshader" id="3_wall"]
 [ext_resource type="Shader" path="res://assets/shaders/aero_sky.gdshader" id="4_sky"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/water_column.tscn" id="5_column"]
+[ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/living.tscn" id="6_living"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
 shader = ExtResource("2_leaf")
@@ -93,12 +94,6 @@ adjustment_saturation = 1.1
 albedo_color = Color(0.6, 0.62, 0.65, 1)
 roughness = 0.7
 
-[sub_resource type="BoxMesh" id="BoxMesh_living"]
-size = Vector3(3.4, 0.7, 2.4)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_living"]
-size = Vector3(3.4, 0.7, 2.4)
-
 [sub_resource type="BoxMesh" id="BoxMesh_desk"]
 size = Vector3(1.0, 0.75, 3.8)
 
@@ -144,26 +139,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.05, 5.2)
 
 [node name="WaterColumn" parent="." instance=ExtResource("5_column")]
 
+[node name="Living" parent="." instance=ExtResource("6_living")]
+transform = Transform3D(0.309017, 0, -0.951057, 0, 1, 0, 0.951057, 0, 0.309017, 5.0406, 0, -1.6378)
+
 [node name="Placeholders" type="Node3D" parent="."]
-
-[node name="Living" type="StaticBody3D" parent="Placeholders"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.2, 0.35, -2.4)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Placeholders/Living"]
-mesh = SubResource("BoxMesh_living")
-surface_material_override/0 = SubResource("StandardMaterial3D_placeholder")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Placeholders/Living"]
-shape = SubResource("BoxShape3D_living")
-
-[node name="Label3D" type="Label3D" parent="Placeholders/Living"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
-pixel_size = 0.006
-billboard = 1
-modulate = Color(0.2, 0.28, 0.35, 1)
-text = "LIVING"
-font_size = 72
-outline_size = 8
 
 [node name="Computers" type="StaticBody3D" parent="Placeholders"]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -8.6, 0.375, -8.6)
