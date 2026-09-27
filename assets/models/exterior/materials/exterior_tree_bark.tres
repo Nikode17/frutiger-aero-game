@@ -1,8 +1,0 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3]
-
-[ext_resource type="Shader" path="res://assets/shaders/exterior_tree.gdshader" id="1_shader"]
-
-[resource]
-resource_name = "exterior_tree_bark"
-shader = ExtResource("1_shader")
-shader_parameter/is_leaf = false

@@ -17,8 +17,8 @@ void vertex() {
 
 void fragment() {
 	ALBEDO = COLOR.rgb;
-	ROUGHNESS = 0.45;
-	SPECULAR = 0.4;
+	ROUGHNESS = 0.6;
+	SPECULAR = 0.15;
 	BACKLIGHT = COLOR.rgb * 0.45;
 	FOG = exterior_haze(world_pos, CAMERA_POSITION_WORLD);
 }

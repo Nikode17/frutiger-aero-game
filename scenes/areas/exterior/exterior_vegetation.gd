@@ -3,8 +3,10 @@ class_name ExteriorVegetation
 extends Node3D
 ## Vegetación del exterior: briznas de hierba (MultiMesh, solo delante de las ventanas),
 ## flores (margaritas, rosas y amarillas; más densas bajo la ventana grande del living),
-## el árbol destacado y grupos de árboles sencillos hacia el horizonte (MultiMesh).
-## Las mallas de briznas y flores se generan aquí con colores de vértice.
+## el árbol destacado (Jacaranda Tree de Poly Haven, versión de juego) y grupos de árboles
+## hacia el horizonte como impostores del mismo árbol (MultiMesh de rectángulos que miran a
+## la cámara, con una sombra suave de contacto). Las mallas de briznas y flores se generan
+## aquí con colores de vértice.
 
 @export_tool_button("Reconstruir vegetación") var rebuild_action: Callable = _build
 
@@ -26,10 +28,17 @@ extends Node3D
 @export var flower_mix: Vector3 = Vector3(0.45, 0.3, 0.25)   # margaritas, rosas, amarillas
 
 @export_group("Árboles")
-@export var featured_tree: PackedScene = preload("res://assets/models/exterior/tree_featured.glb")
-@export_range(0.0, 360.0, 0.5) var featured_angle_deg: float = 353.0
-@export var featured_distance: float = 38.0
-@export var far_tree: PackedScene = preload("res://assets/models/exterior/tree_far.glb")
+@export var featured_tree: PackedScene = preload("res://assets/models/exterior/tree_hero.glb")
+@export_range(0.0, 360.0, 0.5) var featured_angle_deg: float = 349.0
+@export var featured_distance: float = 44.0
+## Impostor de los árboles lejanos (atlas de scripts/tools/bake_tree_impostors.gd)
+@export var impostor_material: Material
+@export var impostor_frame: float = 19.4        # lado del encuadre del atlas (m)
+@export var impostor_base: float = -0.15         # altura de la base del encuadre (m)
+@export var impostor_views: int = 4
+@export var tree_shadow_material: Material
+@export var group_scale_range: Vector2 = Vector2(0.55, 1.0)
+@export var horizon_scale_range: Vector2 = Vector2(0.7, 1.15)
 ## Grupos: x = ángulo, y = distancia (m), z = dispersión (m), w = número de árboles
 @export var tree_groups: Array[Vector4] = [
 	Vector4(348.0, 235.0, 70.0, 20.0), Vector4(300.0, 170.0, 45.0, 12.0), Vector4(22.0, 150.0, 45.0, 14.0),
@@ -234,48 +243,66 @@ func _build_trees() -> void:
 		tree.position = Vector3(x, _terrain.height_at(x, z), z)
 		tree.rotation.y = 0.6
 		_add_generated(tree)
-	if far_tree == null:
-		return
-	var mesh := _first_mesh(far_tree)
-	if mesh == null:
-		return
 	var xforms: Array[Transform3D] = []
 	for g in tree_groups:
 		for k in int(g.w):
 			var th := deg_to_rad(g.x)
 			var center := Vector2(cos(th), sin(th)) * g.y
 			var off := Vector2(_rng.randf_range(-1.0, 1.0), _rng.randf_range(-1.0, 1.0)) * g.z
-			xforms.append(_tree_xform(center + off, _rng.randf_range(0.8, 1.6)))
+			xforms.append(_tree_xform(center + off, _rng.randf_range(group_scale_range.x, group_scale_range.y)))
 	var placed := 0
 	while placed < horizon_tree_count:
 		var a := _rng.randf() * 360.0
 		if absf(angle_difference(deg_to_rad(a), deg_to_rad(horizon_gap.x))) < deg_to_rad(horizon_gap.y):
 			continue
 		var r := _rng.randf_range(horizon_distance_range.x, horizon_distance_range.y)
-		xforms.append(_tree_xform(Vector2(cos(deg_to_rad(a)), sin(deg_to_rad(a))) * r, _rng.randf_range(1.2, 2.2)))
+		xforms.append(_tree_xform(Vector2(cos(deg_to_rad(a)), sin(deg_to_rad(a))) * r, _rng.randf_range(horizon_scale_range.x, horizon_scale_range.y)))
 		placed += 1
+	# Impostores: rectángulo vertical con la base del encuadre en el suelo
+	var quad := QuadMesh.new()
+	quad.size = Vector2(impostor_frame, impostor_frame)
+	quad.center_offset = Vector3(0.0, impostor_base + impostor_frame * 0.5, 0.0)
 	var mm := MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
-	mm.mesh = mesh
+	mm.use_custom_data = true
+	mm.mesh = quad
 	mm.instance_count = xforms.size()
 	for k in xforms.size():
 		mm.set_instance_transform(k, xforms[k])
+		mm.set_instance_custom_data(k, Color(float(_rng.randi() % maxi(impostor_views, 1)), _rng.randf(), 0.0, 0.0))
 	var mmi := MultiMeshInstance3D.new()
-	mmi.name = "TreeGroups"
+	mmi.name = "TreeImpostors"
 	mmi.multimesh = mm
+	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mmi.custom_aabb = AABB(Vector3(-2000, -100, -2000), Vector3(4000, 400, 4000))
+	if impostor_material:
+		mmi.material_override = impostor_material
 	_add_generated(mmi)
+	# Sombras de contacto: óvalo algo desplazado hacia donde cae la sombra del sol
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(impostor_frame * 0.72, impostor_frame * 0.55)
+	var smm := MultiMesh.new()
+	smm.transform_format = MultiMesh.TRANSFORM_3D
+	smm.mesh = plane
+	smm.instance_count = xforms.size()
+	for k in xforms.size():
+		var t := xforms[k]
+		var s := t.basis.get_scale().x
+		var p := t.origin + Vector3(1.6, 0.0, 1.2) * s
+		p.y = _terrain.height_at(p.x, p.z) + 0.12
+		var n := _terrain.normal_at(p.x, p.z)
+		var bx := (Vector3.RIGHT - n * n.x).normalized()
+		var basis := Basis(bx, n, bx.cross(n))
+		smm.set_instance_transform(k, Transform3D(basis.scaled(Vector3(s, 1.0, s)), p))
+	var smi := MultiMeshInstance3D.new()
+	smi.name = "TreeShadows"
+	smi.multimesh = smm
+	smi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if tree_shadow_material:
+		smi.material_override = tree_shadow_material
+	_add_generated(smi)
 
 
 func _tree_xform(p: Vector2, s: float) -> Transform3D:
 	var basis := Basis(Vector3.UP, _rng.randf() * TAU).scaled(Vector3.ONE * s)
 	return Transform3D(basis, Vector3(p.x, _terrain.height_at(p.x, p.y), p.y))
-
-
-func _first_mesh(scene: PackedScene) -> Mesh:
-	var inst := scene.instantiate()
-	var found: Mesh = null
-	for mi in inst.find_children("*", "MeshInstance3D", true, false):
-		found = (mi as MeshInstance3D).mesh
-		break
-	inst.free()
-	return found
