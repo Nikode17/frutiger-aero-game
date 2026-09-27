@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://2lxcysx4ccrk"
-path="res://.godot/imported/figure_green.glb-389cf91529f93c18365c2b5fc9c58dc2.scn"
+uid="uid://dav14tc1enevi"
+path="res://.godot/imported/droplet_cyan.glb-09089dffe16fee1a33ec8015c4697aab.scn"
 
 [deps]
 
-source_file="res://assets/models/area_01/figure_green.glb"
-dest_files=["res://.godot/imported/figure_green.glb-389cf91529f93c18365c2b5fc9c58dc2.scn"]
+source_file="res://assets/models/area_01/droplet_cyan.glb"
+dest_files=["res://.godot/imported/droplet_cyan.glb-09089dffe16fee1a33ec8015c4697aab.scn"]
 
 [params]
 
@@ -46,10 +46,15 @@ _subresources={
 "use_external/fallback_path": "res://assets/models/area_01/materials/computers_dark.tres",
 "use_external/path": "res://assets/models/area_01/materials/computers_dark.tres"
 },
-"figure_green": {
+"drop_cyan": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/figure_green.tres",
-"use_external/path": "res://assets/models/area_01/materials/figure_green.tres"
+"use_external/fallback_path": "res://assets/models/area_01/materials/drop_cyan.tres",
+"use_external/path": "res://assets/models/area_01/materials/drop_cyan.tres"
+},
+"sprout_green": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/models/area_01/materials/sprout_green.tres",
+"use_external/path": "res://assets/models/area_01/materials/sprout_green.tres"
 }
 }
 }

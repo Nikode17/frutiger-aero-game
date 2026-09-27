@@ -6,8 +6,8 @@
 [ext_resource type="PackedScene" path="res://assets/models/area_01/keyboard_mouse.glb" id="6_kb"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/office_chair.tscn" id="7_chair"]
 [ext_resource type="PackedScene" path="res://assets/models/area_01/succulent.glb" id="8_succ"]
-[ext_resource type="PackedScene" path="res://assets/models/area_01/figure_blue.glb" id="9_fblue"]
-[ext_resource type="PackedScene" path="res://assets/models/area_01/figure_green.glb" id="10_fgreen"]
+[ext_resource type="PackedScene" path="res://assets/models/area_01/droplet_cyan.glb" id="9_dcyan"]
+[ext_resource type="PackedScene" path="res://assets/models/area_01/droplet_mint.glb" id="10_dmint"]
 
 [node name="Computers" type="Node3D"]
 
@@ -38,10 +38,10 @@ transform = Transform3D(-0.893371, 0, 0.449319, 0, 1, 0, -0.449319, 0, -0.893371
 [node name="Succulent" parent="." instance=ExtResource("8_succ")]
 transform = Transform3D(0.939693, 0, 0.342020, 0, 1, 0, -0.342020, 0, 0.939693, -1.7200, 0.7800, -4.5200)
 
-[node name="FigureBlue" parent="." instance=ExtResource("9_fblue")]
+[node name="DropletCyan" parent="." instance=ExtResource("9_dcyan")]
 transform = Transform3D(0.978148, 0, 0.207912, 0, 1, 0, -0.207912, 0, 0.978148, -0.0900, 0.7800, -5.0800)
 
-[node name="FigureGreen" parent="." instance=ExtResource("10_fgreen")]
+[node name="DropletMint" parent="." instance=ExtResource("10_dmint")]
 transform = Transform3D(0.951057, 0, -0.309017, 0, 1, 0, 0.309017, 0, 0.951057, 0.1000, 0.7800, -5.1000)
 
 [node name="FillLight" type="OmniLight3D" parent="."]

@@ -4,8 +4,9 @@ extends Node3D
 ## Cáscara orgánica de la habitación generada por código: suelo, paredes y techo sin
 ## esquinas vivas. La planta es una B-spline cúbica cerrada que sigue una superelipse y,
 ## en una esquina, forma un entrante con cuello (la zona de ordenadores). El perfil
-## vertical es un rectángulo redondeado. Genera además la colisión, una copia exterior
-## solo para sombras, el borde del tragaluz y los marcos de ventana.
+## vertical es un rectángulo redondeado. En algunos tramos la pared forma una "ola"
+## (saliente redondeado hacia dentro a media altura). Genera además la colisión, una
+## copia exterior solo para sombras, el borde del tragaluz y los marcos de ventana.
 ## Los huecos se recortan en aero_wall.gdshader con los mismos parámetros.
 
 @export_tool_button("Reconstruir habitación") var rebuild_action: Callable = _build
@@ -32,7 +33,7 @@ extends Node3D
 
 @export_group("Resolución")
 @export_range(32, 1024) var segments_around: int = 288
-@export_range(8, 128) var segments_profile: int = 64
+@export_range(8, 160) var segments_profile: int = 96   # más filas para que las olas queden suaves
 @export_range(6, 32) var tube_segments: int = 14
 
 @export_group("Materiales")
@@ -53,12 +54,17 @@ extends Node3D
 @export_group("Ventanas")
 @export var windows: Array[RoomWindow] = []
 
+@export_group("Olas")
+@export var waves: Array[RoomWave] = []
+
 const META_GENERATED := &"room_shell_generated"
 const MAX_WINDOWS := 4
 const EPS := 1e-3
 
 # Contorno en planta remuestreado por longitud de arco (segments_around puntos)
 var _plan: PackedVector2Array = PackedVector2Array()
+# Ángulo de cada punto de la planta (para las olas)
+var _plan_theta: PackedFloat32Array = PackedFloat32Array()
 # Signo para que las normales apunten al interior (se calcula una vez por construcción)
 var _normal_sign: float = 1.0
 
@@ -218,6 +224,9 @@ func _build_plan() -> void:
 		var span := lengths[seg + 1] - lengths[seg]
 		var f := 0.0 if span <= 0.0 else (target - lengths[seg]) / span
 		_plan.append(a.lerp(b, f))
+	_plan_theta = PackedFloat32Array()
+	for p in _plan:
+		_plan_theta.append(atan2(p.y, p.x))
 	_normal_sign = 1.0
 	var probe := _grid_normal_raw(0, segments_profile / 2)
 	var to_center := -Vector3(_plan[0].x, 0.0, _plan[0].y)
@@ -270,8 +279,51 @@ func _row_psi(j: int) -> float:
 
 func _grid_point(i: int, j: int) -> Vector3:
 	var prof := _profile(_row_psi(j))
-	var p := _plan[i % segments_around] * prof.x
+	var k := i % segments_around
+	var p := _apply_waves(_plan[k] * prof.x, _plan_theta[k], prof.y)
 	return Vector3(p.x, prof.y, p.y)
+
+
+# --- Olas ---------------------------------------------------------------------------
+
+## Desplaza el punto de la planta hacia dentro (en dirección radial) según las olas.
+func _apply_waves(p: Vector2, theta: float, y: float) -> Vector2:
+	var off := _wave_offset(theta, y)
+	if off <= 0.0:
+		return p
+	var r := p.length()
+	if r < EPS:
+		return p
+	return p * maxf(r - off, 0.0) / r
+
+
+## Suma de lo que sale la pared por todas las olas en (theta, altura).
+func _wave_offset(theta: float, y: float) -> float:
+	var total := 0.0
+	for w in waves:
+		if w == null or not w.enabled or w.depth <= 0.0:
+			continue
+		var half := deg_to_rad(w.half_width_deg)
+		var d := angle_difference(deg_to_rad(w.angle_deg), theta)
+		if absf(d) >= half:
+			continue
+		# Entrada y salida laterales: núcleo plano y transición suave (1 - u²)²
+		var taper := minf(deg_to_rad(w.taper_deg), half)
+		var u := clampf((absf(d) - (half - taper)) / taper, 0.0, 1.0)
+		var side := (1.0 - u * u) * (1.0 - u * u)
+		# La cresta ondula un poco a lo largo del tramo
+		var crest := w.crest_height + w.crest_variation * sin(PI * d / half)
+		# Perfil vertical asimétrico: sube suave desde abajo y vuelve antes hacia el techo
+		var v := 0.0
+		if y < crest:
+			v = (crest - y) / maxf(w.lower_extent, EPS)
+		else:
+			v = (y - crest) / maxf(w.upper_extent, EPS)
+		if v >= 1.0:
+			continue
+		var vertical := (1.0 - v * v) * (1.0 - v * v)
+		total += w.depth * side * vertical
+	return total
 
 
 func _grid_normal_raw(i: int, j: int) -> Vector3:
@@ -297,7 +349,7 @@ func _grid_normal(i: int, j: int) -> Vector3:
 ## Punto de la superficie en la dirección theta (para tubos y marcos).
 func _surface_point(theta: float, psi: float) -> Vector3:
 	var prof := _profile(psi)
-	var p := _plan_hit(theta) * prof.x
+	var p := _apply_waves(_plan_hit(theta) * prof.x, theta, prof.y)
 	return Vector3(p.x, prof.y, p.y)
 
 
