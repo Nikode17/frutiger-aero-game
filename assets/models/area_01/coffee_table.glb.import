@@ -50,6 +50,11 @@ _subresources={
 "use_external/enabled": true,
 "use_external/fallback_path": "res://assets/models/area_01/materials/living_glass.tres",
 "use_external/path": "res://assets/models/area_01/materials/living_glass.tres"
+},
+"living_glass_edge": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/models/area_01/materials/living_glass_edge.tres",
+"use_external/path": "res://assets/models/area_01/materials/living_glass_edge.tres"
 }
 }
 }

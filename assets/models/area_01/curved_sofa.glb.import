@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://luv6g2umhxjc"
-path="res://.godot/imported/pod_chair.glb-e8d0743047062df7da6d6ae77e9b6942.scn"
+uid="uid://ck182sjapvlht"
+path="res://.godot/imported/curved_sofa.glb-9883aaf9d98793f692749d07be82f9b1.scn"
 
 [deps]
 
-source_file="res://assets/models/area_01/pod_chair.glb"
-dest_files=["res://.godot/imported/pod_chair.glb-e8d0743047062df7da6d6ae77e9b6942.scn"]
+source_file="res://assets/models/area_01/curved_sofa.glb"
+dest_files=["res://.godot/imported/curved_sofa.glb-9883aaf9d98793f692749d07be82f9b1.scn"]
 
 [params]
 
@@ -41,27 +41,12 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "materials": {
-"living_chrome": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_chrome.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_chrome.tres"
-},
-"living_white": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_white.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_white.tres"
-},
 "pod_inner": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://assets/models/area_01/materials/living_white_soft.tres",
 "use_external/path": "res://assets/models/area_01/materials/living_white_soft.tres"
 },
 "pod_outer": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_mint.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_mint.tres"
-},
-"pod_rim": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://assets/models/area_01/materials/living_mint.tres",
 "use_external/path": "res://assets/models/area_01/materials/living_mint.tres"

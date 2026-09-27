@@ -2,6 +2,6 @@
 
 [resource]
 resource_name = "living_rug"
-albedo_color = Color(0.52, 0.84, 0.76, 1)
+albedo_color = Color(0.86, 1, 0.72, 1)
 roughness = 1.0
 metallic_specular = 0.1
