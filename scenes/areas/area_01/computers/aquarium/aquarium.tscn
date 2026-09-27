@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/computers/aquarium/aquarium.gd" id="1_aquarium"]
 
-[node name="Aquarium" type="Node2D"]
+[node name="Aquarium" type="Node3D"]
 script = ExtResource("1_aquarium")

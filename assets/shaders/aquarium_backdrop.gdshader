@@ -1,6 +1,8 @@
-shader_type canvas_item;
-// Fondo del acuario de la pantalla grande: degradado de agua, rayos de luz que bajan,
-// silueta difusa de ciudad al fondo y arena con cáusticas abajo.
+shader_type spatial;
+render_mode unshaded, fog_disabled, cull_disabled;
+// Telón de fondo de la escena 3D del acuario: degradado de agua, rayos de luz que bajan,
+// silueta difusa de ciudad al fondo y arena con cáusticas abajo. Va en un plano lejano
+// detrás de peces y medusas; no le afecta la niebla (ya es el color del agua lejana).
 
 uniform vec3 top_color : source_color = vec3(0.42, 0.86, 1.0);
 uniform vec3 deep_color : source_color = vec3(0.04, 0.3, 0.66);
@@ -65,5 +67,5 @@ void fragment() {
 	vec3 sand_col = sand_color * (0.85 + 0.25 * pow(abs(c), 2.0));
 	col = mix(col, mix(sand_col, deep_color, 0.25), sand);
 
-	COLOR = vec4(col, 1.0);
+	ALBEDO = col;
 }

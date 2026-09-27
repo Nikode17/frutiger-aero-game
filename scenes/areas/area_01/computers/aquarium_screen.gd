@@ -29,6 +29,8 @@ extends Node3D
 @export_group("Imagen")
 @export var screen_shader: Shader = preload("res://assets/shaders/aquarium_screen.gdshader")
 @export var brightness: float = 1.0
+## Veces por segundo que se vuelve a renderizar el acuario (0 = cada fotograma)
+@export var viewport_fps: float = 30.0
 
 @export_group("Luz")
 @export var light_color: Color = Color(0.45, 0.75, 1.0)
@@ -46,6 +48,7 @@ var _s_samples: PackedFloat32Array = PackedFloat32Array()
 var _s_start: float = 0.0
 var _lights: Array[OmniLight3D] = []
 var _time: float = 0.0
+var _since_render: float = 0.0
 
 
 func _ready() -> void:
@@ -53,9 +56,20 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if Engine.is_editor_hint() or light_pulse <= 0.0:
+	if Engine.is_editor_hint():
 		return
 	_time += delta
+	# Renderizar el acuario a un ritmo limitado para no cargar la GPU
+	var vp := get_node_or_null(viewport_path) as SubViewport
+	if vp:
+		_since_render += delta
+		if viewport_fps <= 0.0:
+			vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		elif _since_render >= 1.0 / viewport_fps:
+			_since_render = 0.0
+			vp.render_target_update_mode = SubViewport.UPDATE_ONCE
+	if light_pulse <= 0.0:
+		return
 	for k in _lights.size():
 		_lights[k].light_energy = light_energy * (1.0 + light_pulse * sin(_time * 0.8 + float(k) * 2.1))
 

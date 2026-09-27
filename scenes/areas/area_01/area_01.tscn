@@ -171,9 +171,10 @@ script = ExtResource("8_screen")
 frame_material = ExtResource("9_white")
 
 [node name="AquariumViewport" type="SubViewport" parent="AquariumScreen"]
-disable_3d = true
-msaa_2d = 1
+own_world_3d = true
+msaa_3d = 1
+positional_shadow_atlas_size = 0
 size = Vector2i(1104, 420)
-render_target_update_mode = 4
+render_target_update_mode = 1
 
 [node name="Aquarium" parent="AquariumScreen/AquariumViewport" instance=ExtResource("10_aquarium")]

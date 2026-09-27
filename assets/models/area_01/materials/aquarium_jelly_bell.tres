@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/jellyfish.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "aquarium_jelly_bell"
+shader_parameter/tint = Color(0.78, 0.92, 1, 1)
+shader_parameter/base_alpha = 0.06
+shader_parameter/fresnel_alpha = 0.5
+shader_parameter/iridescence = 0.7
+shader_parameter/glow = 0.0
+shader_parameter/sway_amount = 0.0
+shader = ExtResource("1_shader")
