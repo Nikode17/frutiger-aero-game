@@ -48,6 +48,11 @@ bool in_window(vec3 p, vec4 pos, vec2 size) {
 	if (pos.w < 0.5 || size.x <= 0.0 || size.y <= 0.0) {
 		return false;
 	}
+	// Solo la pared a la distancia de la ventana (evita recortar otras paredes
+	// que queden en el mismo ángulo, como los hombros del entrante)
+	if (abs(length(p.xz) - pos.z) > 0.25 * pos.z) {
+		return false;
+	}
 	float ang = atan(p.z, p.x);
 	float d = ang - pos.x;
 	d = atan(sin(d), cos(d));   // diferencia angular envuelta a [-PI, PI]
