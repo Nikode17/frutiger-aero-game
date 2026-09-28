@@ -11,9 +11,9 @@ script = ExtResource("1_main")
 
 [node name="Area01" parent="." unique_id=864718069 instance=ExtResource("3_area")]
 
-[node name="Exterior" parent="." instance=ExtResource("4_exterior")]
+[node name="Exterior" parent="." unique_id=643441494 instance=ExtResource("4_exterior")]
 
 [node name="Player" parent="." unique_id=9267178 instance=ExtResource("2_player")]
 
-[node name="CameraFx" parent="." instance=ExtResource("5_camera_fx")]
+[node name="CameraFx" parent="." unique_id=1141792813 instance=ExtResource("5_camera_fx")]
 sun_path = NodePath("../Area01/Sun")
