@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/desk.tscn" id="3_desk"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/glow_sphere.tscn" id="4_sphere"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" path="res://assets/models/area_01/succulent.glb" id="8_succ"]
 [ext_resource type="PackedScene" path="res://assets/models/area_01/droplet_cyan.glb" id="9_dcyan"]
 [ext_resource type="PackedScene" path="res://assets/models/area_01/droplet_mint.glb" id="10_dmint"]
+[ext_resource type="Script" path="res://scenes/fx/led_strip.gd" id="11_led"]
+[ext_resource type="Material" path="res://scenes/fx/materials/led_cyan.tres" id="12_cyan"]
 
 [node name="Computers" type="Node3D"]
 
@@ -50,3 +52,16 @@ light_color = Color(0.85, 0.95, 1, 1)
 light_energy = 0.7
 light_specular = 0.0
 omni_range = 6.0
+
+[node name="DeskLed" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.705, -1.455)
+script = ExtResource("11_led")
+points = PackedVector3Array(-2.0216, 0.0000, -2.4092, -1.7282, 0.0000, -2.6276, -1.4115, 0.0000, -2.8105, -1.0757, 0.0000, -2.9553, -0.7253, 0.0000, -3.0602, -0.3651, 0.0000, -3.1237, 0.0000, 0.0000, -3.1450, 0.3651, 0.0000, -3.1237, 0.7253, 0.0000, -3.0602, 1.0757, 0.0000, -2.9553, 1.4115, 0.0000, -2.8105, 1.7282, 0.0000, -2.6276, 2.0216, 0.0000, -2.4092)
+radius = 0.008
+material = ExtResource("12_cyan")
+light_count = 3
+light_color = Color(0.25, 0.85, 1, 1)
+light_energy = 0.12
+light_range = 1.4
+light_specular = 0.0
+light_offset = Vector3(0, -0.15, 0.05)

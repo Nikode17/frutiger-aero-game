@@ -63,8 +63,10 @@ Valores de partida (área 1, `scenes/areas/area_01/area_01.tscn`):
 - **Sol**: `DirectionalLight3D` fuerte con sombras nítidas (poco blur). La niebla
   volumétrica da los haces visibles por el tragaluz y las ventanas.
 - **Luz rebotada**: SDFGI (no necesita horneado; la sala se genera por código).
-- **Imagen**: tonemap ACES con algo más de exposición, glow en modo *screen* con umbral
-  bajo para que brillen los reflejos, saturación y contraste subidos en `adjustment`.
+- **Imagen**: tonemap ACES con algo más de exposición, glow en modo *screen* con el umbral
+  algo por encima del blanco de las paredes (~1,25) para que brillen reflejos, sol y LED sin
+  velar la sala, saturación y contraste subidos en `adjustment`. Niebla volumétrica poco
+  densa e iluminada casi solo por el sol: si se sube mucho, la imagen se vuelve lechosa.
 - **Cámara**: `scenes/fx/camera_fx.tscn` (instanciado en `main.tscn`) con destello de
   estrella y lens flare del sol y una viñeta ligera. Sirve para cualquier área con un sol.
 - **LED**: `LedStrip` (tubo emisivo y, si hace falta, luces pequeñas que bañan el suelo).

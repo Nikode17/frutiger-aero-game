@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/fx/camera_fx.gd" id="1_fx"]
+[ext_resource type="Shader" path="res://assets/shaders/sun_flare.gdshader" id="2_flare"]
+[ext_resource type="Shader" path="res://assets/shaders/vignette.gdshader" id="3_vignette"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_flare"]
+size = Vector2(2, 2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flare"]
+render_priority = 127
+shader = ExtResource("2_flare")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vignette"]
+shader = ExtResource("3_vignette")
+
+[node name="CameraFx" type="Node"]
+script = ExtResource("1_fx")
+
+[node name="Flare" type="MeshInstance3D" parent="."]
+visible = false
+cast_shadow = 0
+gi_mode = 0
+mesh = SubResource("QuadMesh_flare")
+material_override = SubResource("ShaderMaterial_flare")
+
+[node name="Vignette" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Rect" type="ColorRect" parent="Vignette"]
+material = SubResource("ShaderMaterial_vignette")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

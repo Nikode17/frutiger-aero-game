@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_shell.gd" id="1_shell"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_window.gd" id="1_window"]
@@ -12,6 +12,11 @@
 [ext_resource type="Script" path="res://scenes/areas/area_01/computers/aquarium_screen.gd" id="8_screen"]
 [ext_resource type="Material" path="res://assets/models/area_01/materials/living_white.tres" id="9_white"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/aquarium/aquarium.tscn" id="10_aquarium"]
+[ext_resource type="Script" path="res://scenes/areas/area_01/room_leds.gd" id="11_leds"]
+[ext_resource type="Material" path="res://scenes/fx/materials/led_cyan.tres" id="12_cyan"]
+[ext_resource type="Material" path="res://scenes/fx/materials/led_green.tres" id="13_green"]
+[ext_resource type="Material" path="res://scenes/fx/materials/downlight.tres" id="14_downlight"]
+[ext_resource type="Material" path="res://assets/models/area_01/materials/living_chrome.tres" id="15_chrome"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
 shader = ExtResource("2_leaf")
@@ -98,7 +103,8 @@ ambient_light_color = Color(0.55, 0.85, 1, 1)
 ambient_light_energy = 0.9
 reflected_light_source = 2
 tonemap_mode = 3
-tonemap_white = 4.0
+tonemap_exposure = 1.15
+tonemap_white = 6.0
 ssr_enabled = true
 ssr_max_steps = 64
 ssr_fade_in = 0.15
@@ -110,15 +116,35 @@ ssao_intensity = 1.5
 ssao_power = 1.5
 ssao_detail = 0.5
 ssao_light_affect = 0.0
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_bounce_feedback = 0.4
+sdfgi_min_cell_size = 0.15
+sdfgi_energy = 1.5
 glow_enabled = true
-glow_intensity = 0.5
-glow_strength = 1.0
-glow_bloom = 0.15
-glow_blend_mode = 2
+glow_levels/1 = 0.2
+glow_levels/2 = 0.6
+glow_levels/3 = 0.8
+glow_levels/4 = 0.5
+glow_levels/5 = 0.25
+glow_intensity = 0.6
+glow_strength = 1.05
+glow_bloom = 0.05
+glow_blend_mode = 1
 glow_hdr_threshold = 1.25
 glow_hdr_scale = 2.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.015
+volumetric_fog_albedo = Color(0.92, 0.97, 1, 1)
+volumetric_fog_gi_inject = 0.1
+volumetric_fog_anisotropy = 0.45
+volumetric_fog_length = 28.0
+volumetric_fog_ambient_inject = 0.02
+volumetric_fog_sky_affect = 0.0
 adjustment_enabled = true
-adjustment_saturation = 1.1
+adjustment_brightness = 1.03
+adjustment_contrast = 1.12
+adjustment_saturation = 1.25
 
 [node name="Area01" type="Node3D"]
 
@@ -126,12 +152,13 @@ adjustment_saturation = 1.1
 environment = SubResource("Environment_area")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.819152, -0.506438, 0.269278, 0, 0.469472, 0.882948, -0.573576, -0.723268, 0.384569, 0, 8, 0)
-light_color = Color(1, 0.97, 0.9, 1)
-light_energy = 1.8
+transform = Transform3D(-0.087156, -0.763129, 0.640342, 0.000000, 0.642788, 0.766044, -0.996195, 0.066765, -0.056023, 0, 8, 0)
+light_color = Color(1, 0.96, 0.88, 1)
+light_energy = 2.2
+light_volumetric_fog_energy = 2.5
 shadow_enabled = true
-shadow_blur = 1.5
-directional_shadow_max_distance = 50.0
+shadow_blur = 0.35
+directional_shadow_max_distance = 60.0
 
 [node name="FillLight" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0)
@@ -159,6 +186,16 @@ interior = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.05, 5.2)
 
 [node name="WaterColumn" parent="." instance=ExtResource("5_column")]
+
+[node name="RoomLeds" type="Node3D" parent="." node_paths=PackedStringArray("room_shell")]
+script = ExtResource("11_leds")
+room_shell = NodePath("../RoomShell")
+cyan_material = ExtResource("12_cyan")
+green_material = ExtResource("13_green")
+downlight_material = ExtResource("14_downlight")
+bezel_material = ExtResource("15_chrome")
+skirting_height = 0.12
+spot_positions = PackedVector2Array(6, -2.6, 5, 0, -5.2, -1.8, -4.3, -4.3, 2.5, -4.8)
 
 [node name="Living" parent="." instance=ExtResource("6_living")]
 transform = Transform3D(0.309017, 0, -0.951057, 0, 1, 0, 0.951057, 0, 0.309017, 4.8504, 0, -1.576)

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/area_01.tscn" id="3_area"]
 [ext_resource type="PackedScene" path="res://scenes/areas/exterior/exterior.tscn" id="4_exterior"]
+[ext_resource type="PackedScene" path="res://scenes/fx/camera_fx.tscn" id="5_camera_fx"]
 
 [node name="Main" type="Node3D" unique_id=1471286658]
 script = ExtResource("1_main")
@@ -13,3 +14,6 @@ script = ExtResource("1_main")
 [node name="Exterior" parent="." instance=ExtResource("4_exterior")]
 
 [node name="Player" parent="." unique_id=9267178 instance=ExtResource("2_player")]
+
+[node name="CameraFx" parent="." instance=ExtResource("5_camera_fx")]
+sun_path = NodePath("../Area01/Sun")
