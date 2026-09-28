@@ -2,6 +2,10 @@
 
 Juego de exploración en primera persona (walking sim) con estética Frutiger Aero: cielos azules, agua cristalina, burbujas, materiales glossy y de cristal, vegetación verde brillante, luz suave y optimista. El jugador pasea por distintas áreas con música ambiental de fondo y puede moverse entre ellas. El alcance crecerá sobre la marcha.
 
+## Estilo visual
+Antes de cualquier trabajo visual (modelos, materiales, luz, cámara, decoración), leer
+`docs/estilo.md`: guía de estilo con las variantes "Eco soleado" y "Doméstico LED".
+
 ## Roles
 - **Tommy (usuario)** es el director creativo: decide áreas, mood, referencias, música y prioridades.
 - **Claude** es quien implementa y aconseja. Propone, pero no toma decisiones creativas por su cuenta.
