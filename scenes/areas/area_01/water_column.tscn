@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/water_column.gd" id="1_column"]
 [ext_resource type="Shader" path="res://assets/shaders/aero_water.gdshader" id="2_water"]
@@ -6,6 +6,7 @@
 [ext_resource type="Shader" path="res://assets/shaders/caustics.gdshader" id="4_caustics"]
 [ext_resource type="Shader" path="res://assets/shaders/bubble_process.gdshader" id="5_bubble_process"]
 [ext_resource type="Material" path="res://assets/materials/lime_gloss.tres" id="6_lime"]
+[ext_resource type="Shader" path="res://assets/shaders/jellyfish.gdshader" id="7_jelly"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glass"]
 render_priority = 2
@@ -47,6 +48,57 @@ emission_energy_multiplier = 3.0
 render_priority = -1
 shader = ExtResource("4_caustics")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jelly_bell"]
+render_priority = 1
+shader = ExtResource("7_jelly")
+shader_parameter/tint = Color(0.2, 0.4, 0.8, 1)
+shader_parameter/base_alpha = 0.1
+shader_parameter/fresnel_alpha = 0.75
+shader_parameter/iridescence = 0.15
+shader_parameter/glow = 0.0
+shader_parameter/pulse_frequency = 1.1
+shader_parameter/pulse_amount = 0.1
+shader_parameter/sway_amount = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jelly_core"]
+render_priority = 1
+shader = ExtResource("7_jelly")
+shader_parameter/tint = Color(0.66, 0.3, 0.8, 1)
+shader_parameter/base_alpha = 0.6
+shader_parameter/fresnel_alpha = 0.3
+shader_parameter/iridescence = 0.1
+shader_parameter/glow_color = Color(0.9, 0.62, 1, 1)
+shader_parameter/glow = 0.08
+shader_parameter/pulse_frequency = 1.1
+shader_parameter/pulse_amount = 0.1
+shader_parameter/sway_amount = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jelly_arms"]
+render_priority = 1
+shader = ExtResource("7_jelly")
+shader_parameter/tint = Color(0.42, 0.52, 0.9, 1)
+shader_parameter/base_alpha = 0.16
+shader_parameter/fresnel_alpha = 0.4
+shader_parameter/iridescence = 0.1
+shader_parameter/glow_color = Color(0.7, 0.8, 1, 1)
+shader_parameter/glow = 0.03
+shader_parameter/pulse_frequency = 1.1
+shader_parameter/pulse_amount = 0.1
+shader_parameter/sway_amount = 0.2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jelly_tentacles"]
+render_priority = 1
+shader = ExtResource("7_jelly")
+shader_parameter/tint = Color(0.38, 0.52, 0.9, 1)
+shader_parameter/base_alpha = 0.42
+shader_parameter/fresnel_alpha = 0.3
+shader_parameter/iridescence = 0.1
+shader_parameter/glow_color = Color(0.6, 0.9, 1, 1)
+shader_parameter/glow = 0.04
+shader_parameter/pulse_frequency = 1.1
+shader_parameter/pulse_amount = 0.1
+shader_parameter/sway_amount = 0.3
+
 [node name="WaterColumn" type="Node3D"]
 script = ExtResource("1_column")
 glass_material = SubResource("StandardMaterial3D_glass")
@@ -57,3 +109,7 @@ accent_material = ExtResource("6_lime")
 glow_material = SubResource("StandardMaterial3D_glow")
 caustics_material = SubResource("ShaderMaterial_caustics")
 bubble_process_shader = ExtResource("5_bubble_process")
+jelly_bell_material = SubResource("ShaderMaterial_jelly_bell")
+jelly_core_material = SubResource("ShaderMaterial_jelly_core")
+jelly_arms_material = SubResource("ShaderMaterial_jelly_arms")
+jelly_tentacles_material = SubResource("ShaderMaterial_jelly_tentacles")

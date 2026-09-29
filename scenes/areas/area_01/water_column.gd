@@ -1,9 +1,9 @@
 @tool
 class_name WaterColumn
 extends Node3D
-## Escultura central: tubo de cristal con agua cian luminosa y burbujas subiendo,
-## base y remate redondeados, luz cian y cáusticas en el suelo. Todo se construye
-## por código a partir de los parámetros exportados.
+## Escultura central: tubo de cristal con agua cian luminosa, burbujas subiendo y unas
+## medusas luna que suben y bajan muy despacio, base y remate redondeados, luz cian y
+## cáusticas en el suelo. Todo se construye por código a partir de los parámetros exportados.
 
 @export_tool_button("Reconstruir columna") var rebuild_action: Callable = _build
 
@@ -41,6 +41,23 @@ extends Node3D
 @export var bubble_fade_out: float = 0.5                             # m antes del tope
 @export var bubble_process_shader: Shader                            # bubble_process.gdshader
 
+@export_group("Medusas")
+## Modelo de medusa (el del acuario); ápice de la campana en el origen y lo demás colgando
+@export var jelly_scene: PackedScene = preload("res://assets/models/area_01/aquarium/jellyfish.glb")
+@export_range(0, 6) var jelly_count: int = 3
+@export var jelly_scale_range: Vector2 = Vector2(0.62, 0.8)
+@export var jelly_height: float = 0.51            # largo del modelo a escala 1 (campana + tentáculos)
+@export var jelly_radius: float = 0.135           # radio de la campana a escala 1
+## Segundos que tarda una medusa en subir y volver a bajar
+@export var jelly_cycle_range: Vector2 = Vector2(70.0, 110.0)
+@export var jelly_seed: int = 7
+## Materiales por superficie del modelo (campana, núcleo, brazos, tentáculos); van con
+## render_priority 1, como las burbujas, para dibujarse después del agua
+@export var jelly_bell_material: Material
+@export var jelly_core_material: Material
+@export var jelly_arms_material: Material
+@export var jelly_tentacles_material: Material
+
 @export_group("Luz")
 @export var light_energy: float = 0.7
 @export var light_range: float = 7.0
@@ -49,10 +66,24 @@ extends Node3D
 @export var caustics_radius: float = 1.8
 
 const META_GENERATED := &"water_column_generated"
+## Grupo de lo que no sale en el reflejo planar del suelo (ver PlanarReflection)
+const NO_REFLECTION_GROUP := &"no_planar_reflection"
+
+# Estado de cada medusa: nodo, ciclo, fase, alturas y órbita
+var _jellies: Array[Dictionary] = []
+var _time: float = 0.0
 
 
 func _ready() -> void:
 	_build()
+
+
+func _process(delta: float) -> void:
+	if Engine.is_editor_hint() or _jellies.is_empty():
+		return
+	_time += delta
+	for j in _jellies:
+		_update_jelly(j, delta)
 
 
 func _build() -> void:
@@ -60,6 +91,7 @@ func _build() -> void:
 		if child.has_meta(META_GENERATED):
 			remove_child(child)
 			child.queue_free()
+	_jellies.clear()
 
 	var rt := cap_height * 0.5                       # radio del tubo del toro de los remates
 	var cap_outer := radius + cap_overhang + rt      # radio exterior de base y remate
@@ -94,6 +126,9 @@ func _build() -> void:
 	# Burbujas
 	# Las burbujas viven entre la base del agua y un poco por debajo del remate superior
 	_build_bubbles(y0 + 0.05, y1 - 0.06 - bubble_max_size * 0.5, radius - glass_thickness)
+
+	# Medusas: entre la base del agua y el remate, apartadas del cristal
+	_build_jellies(y0, y1, radius - glass_thickness)
 
 	# Base y remate: toro + disco de relleno
 	_build_cap("BaseCap", rt, cap_outer, rt)
@@ -247,3 +282,74 @@ func _build_bubbles(y_bottom: float, y_top: float, inner_radius: float) -> void:
 			bm.set_shader_parameter("clip_top", global_position.y + y_top + 0.01)
 	particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_add_generated(particles)
+
+
+# --- Medusas -------------------------------------------------------------------------
+
+func _build_jellies(water_bottom: float, water_top: float, inner_radius: float) -> void:
+	if jelly_scene == null or jelly_count <= 0:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = jelly_seed
+	var mats := {
+		"jelly_bell": jelly_bell_material, "jelly_core": jelly_core_material,
+		"jelly_arms": jelly_arms_material, "jelly_tentacles": jelly_tentacles_material,
+	}
+	for k in jelly_count:
+		var jelly: Node3D = jelly_scene.instantiate()
+		jelly.name = "Jelly%d" % k
+		var sc := rng.randf_range(jelly_scale_range.x, jelly_scale_range.y)
+		jelly.scale = Vector3.ONE * sc
+		_add_generated(jelly)
+		jelly.add_to_group(NO_REFLECTION_GROUP)
+		var phase := rng.randf() * TAU
+		for mi: MeshInstance3D in jelly.find_children("*", "MeshInstance3D", true, false):
+			for s in mi.mesh.get_surface_count():
+				var m: Material = mats.get(mi.mesh.surface_get_name(s))
+				if m:
+					mi.set_surface_override_material(s, m)
+			mi.set_instance_shader_parameter("pulse_phase", phase)
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			# Se ordenan antes que las burbujas: las que pasan por delante se ven encima
+			mi.sorting_offset = -2.0
+		# Tramo vertical propio de cada medusa (se reparten a lo alto de la columna)
+		var lo := water_bottom + jelly_height * sc + 0.35
+		var hi := water_top - 0.3
+		var span := (hi - lo) / float(jelly_count)
+		var center := lo + span * (float(k) + 0.5)
+		var amp := minf(span * 0.5 + 0.45, (hi - lo) * 0.5)
+		center = clampf(center, lo + amp, hi - amp)
+		# Repartidas alrededor del eje y con los ciclos desfasados, girando todas en el
+		# mismo sentido para que no se junten
+		var spread := float(k) / float(jelly_count)
+		var j := {
+			"node": jelly,
+			"phase": phase,
+			"omega": TAU / rng.randf_range(jelly_cycle_range.x, jelly_cycle_range.y),
+			"y_phase": TAU * spread + rng.randf_range(-0.4, 0.4),
+			"center": center,
+			"amp": amp,
+			"orbit": TAU * spread + rng.randf_range(-0.3, 0.3),
+			"orbit_speed": rng.randf_range(0.025, 0.035),
+			"radius": minf(rng.randf_range(0.2, 0.3), inner_radius - jelly_radius * sc - 0.12),
+		}
+		_jellies.append(j)
+		_update_jelly(j, 0.0)
+
+
+func _update_jelly(j: Dictionary, delta: float) -> void:
+	var node: Node3D = j["node"]
+	var phase: float = j["phase"]
+	var t := _time * float(j["omega"]) + float(j["y_phase"])
+	# Subida y bajada lentas, con un pequeño empujón en cada latido de la campana
+	# (misma frecuencia que el pulso del shader)
+	var push := maxf(sin(_time * 1.1 + phase + 1.2), 0.0)
+	var y: float = j["center"] + float(j["amp"]) * sin(t) + push * 0.012
+	j["orbit"] = float(j["orbit"]) + float(j["orbit_speed"]) * delta
+	var ang: float = j["orbit"]
+	var r: float = float(j["radius"]) * (1.0 + 0.15 * sin(_time * 0.07 + phase))
+	node.position = Vector3(cos(ang) * r, y, sin(ang) * r)
+	# Se inclina un poco hacia donde va y gira despacio sobre sí misma
+	var climb := cos(t)
+	node.rotation = Vector3(sin(_time * 0.21 + phase) * 0.08 - climb * 0.05, _time * 0.04 + phase,
+			cos(_time * 0.17 + phase) * 0.08)

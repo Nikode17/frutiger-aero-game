@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=35 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_shell.gd" id="1_shell"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_window.gd" id="1_window"]
@@ -19,7 +19,12 @@
 [ext_resource type="Material" path="res://assets/materials/downlight.tres" id="14_downlight"]
 [ext_resource type="Material" path="res://assets/materials/chrome.tres" id="15_chrome"]
 [ext_resource type="Material" path="res://assets/materials/lime_gloss.tres" id="17_lime"]
-[ext_resource type="Material" path="res://assets/materials/brushed_aluminium.tres" id="18_alu"]
+[ext_resource type="Material" path="res://assets/materials/chrome_bezel.tres" id="18_bezel"]
+[ext_resource type="PackedScene" path="res://scenes/props/wall_niche/wall_niche.tscn" id="19_niche"]
+[ext_resource type="PackedScene" path="res://scenes/props/glass_orb/glass_orb.tscn" id="20_orb"]
+[ext_resource type="PackedScene" path="res://scenes/props/drop_pendant/drop_pendant.tscn" id="21_pendant"]
+[ext_resource type="PackedScene" path="res://scenes/props/bubble_disc/bubble_disc.tscn" id="22_disc"]
+[ext_resource type="Material" path="res://assets/materials/glass_green.tres" id="23_glass_green"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
 shader = ExtResource("2_leaf")
@@ -33,7 +38,11 @@ enabled = true
 angle_deg = 342.0
 center_height = 1.9
 radius = Vector2(1.5, 1.55)
-frame_radius = 0.28
+frame_width = 0.11
+frame_height = 0.034
+frame_overlap = 0.04
+accent_width = 0.06
+accent_height = 0.008
 
 [sub_resource type="Resource" id="Resource_window_back"]
 script = ExtResource("1_window")
@@ -41,7 +50,11 @@ enabled = true
 angle_deg = 285.0
 center_height = 1.7
 radius = Vector2(0.7, 1.0)
-frame_radius = 0.22
+frame_width = 0.085
+frame_height = 0.028
+frame_overlap = 0.03
+accent_width = 0.045
+accent_height = 0.007
 
 [sub_resource type="Resource" id="Resource_wave_living"]
 script = ExtResource("1_wave")
@@ -163,7 +176,7 @@ script = ExtResource("1_shell")
 floor_material = SubResource("ShaderMaterial_floor")
 wall_material = SubResource("ShaderMaterial_wall")
 rim_material = ExtResource("9_white")
-frame_material = ExtResource("18_alu")
+frame_material = ExtResource("18_bezel")
 frame_accent_material = ExtResource("17_lime")
 windows = Array[ExtResource("1_window")]([SubResource("Resource_window_living"), SubResource("Resource_window_back")])
 waves = Array[ExtResource("1_wave")]([SubResource("Resource_wave_living"), SubResource("Resource_wave_south"), SubResource("Resource_wave_west")])
@@ -211,7 +224,7 @@ transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 
 
 [node name="AquariumScreen" type="Node3D" parent="."]
 script = ExtResource("8_screen")
-frame_material = ExtResource("18_alu")
+frame_material = ExtResource("18_bezel")
 accent_material = ExtResource("17_lime")
 
 [node name="AquariumViewport" type="SubViewport" parent="AquariumScreen"]
@@ -222,3 +235,97 @@ size = Vector2i(1104, 420)
 render_target_update_mode = 1
 
 [node name="Aquarium" parent="AquariumScreen/AquariumViewport" instance=ExtResource("10_aquarium")]
+
+[node name="Decor" type="Node3D" parent="."]
+
+[node name="LivingNiche" parent="Decor" instance=ExtResource("19_niche")]
+transform = Transform3D(0.682203, 0.000000, -0.731163, -0.000000, 1.000000, 0.000000, 0.731163, 0.000000, 0.682203, 7.0622, 1.5000, -5.1310)
+
+[node name="OrbTopCyan" parent="Decor/LivingNiche" instance=ExtResource("20_orb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, -0.03, 0.135)
+radius = 0.1
+
+[node name="OrbTopGreen" parent="Decor/LivingNiche" instance=ExtResource("20_orb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16, -0.03, 0.14)
+radius = 0.05
+material = ExtResource("23_glass_green")
+
+[node name="OrbLowGreen" parent="Decor/LivingNiche" instance=ExtResource("20_orb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, -0.51, 0.13)
+radius = 0.075
+material = ExtResource("23_glass_green")
+
+[node name="OrbLowCyan" parent="Decor/LivingNiche" instance=ExtResource("20_orb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, -0.51, 0.15)
+radius = 0.055
+
+[node name="TableOrbCyan" parent="Decor" instance=ExtResource("20_orb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.333, 0.493, -1.634)
+radius = 0.08
+
+[node name="TableOrbGreen" parent="Decor" instance=ExtResource("20_orb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.153, 0.493, -1.844)
+radius = 0.062
+material = ExtResource("23_glass_green")
+
+[node name="LivingPendant" parent="Decor" instance=ExtResource("21_pendant")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.1833, 4.795, -1.6842)
+cable_length = 2.3
+drop_height = 0.5
+drop_radius = 0.18
+
+[node name="PocketDiscs" type="Node3D" parent="Decor"]
+
+[node name="Disc0" parent="Decor/PocketDiscs" instance=ExtResource("22_disc")]
+transform = Transform3D(0.456147, 0.000000, -0.889904, -0.000000, 1.000000, 0.000000, 0.889904, 0.000000, 0.456147, -5.8283, 2.0500, -9.9390)
+radius = 0.2
+color = Color(0.25, 0.8, 1, 1)
+seed_value = 1.0
+
+[node name="Disc1" parent="Decor/PocketDiscs" instance=ExtResource("22_disc")]
+transform = Transform3D(0.601377, 0.000000, -0.798966, -0.000000, 1.000000, 0.000000, 0.798966, 0.000000, 0.601377, -6.1188, 2.6000, -10.4260)
+radius = 0.12
+color = Color(0.35, 1, 0.45, 1)
+seed_value = 2.0
+
+[node name="Disc2" parent="Decor/PocketDiscs" instance=ExtResource("22_disc")]
+transform = Transform3D(0.630262, 0.000000, -0.776383, -0.000000, 1.000000, 0.000000, 0.776383, 0.000000, 0.630262, -6.1520, 1.6200, -10.4634)
+radius = 0.15
+color = Color(0.2, 0.45, 1, 1)
+seed_value = 3.0
+
+[node name="Disc3" parent="Decor/PocketDiscs" instance=ExtResource("22_disc")]
+transform = Transform3D(0.491249, 0.000000, -0.871019, -0.000000, 1.000000, 0.000000, 0.871019, 0.000000, 0.491249, -5.9240, 1.3000, -10.1248)
+radius = 0.085
+color = Color(0.35, 1, 0.45, 1)
+seed_value = 4.0
+
+[node name="Disc4" parent="Decor/PocketDiscs" instance=ExtResource("22_disc")]
+transform = Transform3D(0.840927, 0.000000, -0.541149, -0.000000, 1.000000, 0.000000, 0.541149, 0.000000, 0.840927, -6.5140, 2.1500, -10.8048)
+radius = 0.1
+color = Color(0.25, 0.8, 1, 1)
+seed_value = 5.0
+
+[node name="Disc5" parent="Decor/PocketDiscs" instance=ExtResource("22_disc")]
+transform = Transform3D(0.444223, 0.000000, -0.895916, -0.000000, 1.000000, 0.000000, 0.895916, 0.000000, 0.444223, -5.6374, 2.6500, -9.5629)
+radius = 0.075
+color = Color(0.2, 0.45, 1, 1)
+seed_value = 6.0
+
+[node name="Disc6" parent="Decor/PocketDiscs" instance=ExtResource("22_disc")]
+transform = Transform3D(0.847436, 0.000000, -0.530897, -0.000000, 1.000000, 0.000000, 0.530897, 0.000000, 0.847436, -6.5580, 1.3500, -10.8308)
+radius = 0.065
+color = Color(0.25, 0.8, 1, 1)
+seed_value = 7.0
+
+[node name="Disc7" parent="Decor/PocketDiscs" instance=ExtResource("22_disc")]
+transform = Transform3D(0.444223, 0.000000, -0.895916, -0.000000, 1.000000, 0.000000, 0.895916, 0.000000, 0.444223, -5.6140, 1.6000, -9.5156)
+radius = 0.055
+color = Color(0.35, 1, 0.45, 1)
+seed_value = 8.0
+
+[node name="Disc8" parent="Decor/PocketDiscs" instance=ExtResource("22_disc")]
+transform = Transform3D(0.731208, 0.000000, -0.682154, -0.000000, 1.000000, 0.000000, 0.682154, 0.000000, 0.731208, -6.3119, 3.0500, -10.6551)
+radius = 0.06
+color = Color(0.25, 0.8, 1, 1)
+seed_value = 9.0

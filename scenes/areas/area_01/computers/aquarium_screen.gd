@@ -2,10 +2,10 @@
 class_name AquariumScreen
 extends Node3D
 ## Pantalla grande del fondo del entrante: superficie curvada que sigue la pared real
-## (se calcula a partir de RoomShell), esquinas muy redondeadas, marco tubular (aro exterior
-## metálico y aro fino interior de color) y unas luces azules suaves que iluminan la mesa y
-## el suelo. El contenido sale del
-## SubViewport hijo (escena del acuario).
+## (se calcula a partir de RoomShell), esquinas muy redondeadas, marco en bisel tipo ventana
+## de acuario (aro de cromo estrecho que baja hasta la pared y banda plana de color por
+## dentro, ver BezelMesh) y unas luces azules suaves que iluminan la mesa y el suelo. El
+## contenido sale del SubViewport hijo (escena del acuario).
 
 @export_tool_button("Reconstruir pantalla") var rebuild_action: Callable = _build
 
@@ -23,10 +23,13 @@ extends Node3D
 @export_range(2, 64) var segments_y: int = 12
 
 @export_group("Marco")
-@export var frame_radius: float = 0.035
+@export var frame_width: float = 0.06      # Ancho del aro de cromo (m)
+@export var frame_height: float = 0.022    # Cuánto sale el aro por delante de la imagen (m)
+@export var frame_overlap: float = 0.035   # Parte del aro que queda fuera del borde de la imagen (m)
 @export var frame_material: Material
-## Aro fino interior, pegado al borde interior del marco (0 = sin aro)
-@export var accent_radius: float = 0.012
+## Banda plana interior, por delante del borde de la imagen (0 = sin banda)
+@export var accent_width: float = 0.024
+@export var accent_height: float = 0.006
 @export var accent_material: Material
 @export_range(24, 400) var frame_points: int = 160
 
@@ -99,19 +102,24 @@ func _build() -> void:
 	screen.material_override = _make_screen_material()
 	_add_generated(screen)
 
+	# Marco: el perfil se mide desde el borde de la imagen; el pie del cromo baja hasta
+	# la pared para que la pantalla quede empotrada en él
+	var contour := _frame_contour()
+	var u_inner := frame_overlap - frame_width
 	var frame := MeshInstance3D.new()
 	frame.name = "Frame"
-	frame.mesh = _build_frame_mesh(0.0, frame_radius, 0.0)
+	frame.mesh = BezelMesh.sweep(contour[0], contour[1], BezelMesh.chrome_profile(
+			u_inner, frame_width, frame_height, wall_offset + 0.012, accent_height - 0.002))
 	frame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if frame_material:
 		frame.material_override = frame_material
 	_add_generated(frame)
 
-	if accent_material and accent_radius > 0.0:
+	if accent_material and accent_width > 0.0:
 		var accent := MeshInstance3D.new()
 		accent.name = "FrameAccent"
-		# Medio metido bajo el borde interior del marco y un poco por delante de la imagen
-		accent.mesh = _build_frame_mesh(frame_radius + accent_radius * 0.6, accent_radius, accent_radius * 0.4)
+		accent.mesh = BezelMesh.sweep(contour[0], contour[1], BezelMesh.flat_band_profile(
+				u_inner + frame_width * 0.3, u_inner - accent_width, accent_height, accent_height + 0.004))
 		accent.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		accent.material_override = accent_material
 		_add_generated(accent)
@@ -213,18 +221,16 @@ func _build_screen_mesh() -> ArrayMesh:
 	return st.commit()
 
 
-## Tubo de radio `radius` que sigue el contorno redondeado de la pantalla, encogido
-## `inset` metros y separado `offset` metros de la pantalla hacia la sala.
-func _build_frame_mesh(inset: float, radius: float, offset: float) -> ArrayMesh:
+## Contorno redondeado del borde de la imagen, sobre la superficie de la pantalla.
+## Devuelve [puntos, normales hacia la sala].
+func _frame_contour() -> Array[PackedVector3Array]:
 	var h := top_height - bottom_height
-	var rc0 := minf(corner_radius, minf(width, h) * 0.5)
-	var rc := maxf(rc0 - inset, 0.01)
+	var rc := maxf(minf(corner_radius, minf(width, h) * 0.5), 0.01)
 	# Contorno en (s, y): cuatro esquinas redondeadas unidas por tramos rectos
 	var outline: Array[Vector2] = []
-	var lo := inset + rc
 	var corners := [
-		[Vector2(width - lo, h - lo), 0.0], [Vector2(lo, h - lo), PI * 0.5],
-		[Vector2(lo, lo), PI], [Vector2(width - lo, lo), PI * 1.5],
+		[Vector2(width - rc, h - rc), 0.0], [Vector2(rc, h - rc), PI * 0.5],
+		[Vector2(rc, rc), PI], [Vector2(width - rc, rc), PI * 1.5],
 	]
 	var per_corner := maxi(frame_points / 8, 4)
 	var per_side := maxi(frame_points / 8, 4)
@@ -242,32 +248,9 @@ func _build_frame_mesh(inset: float, radius: float, offset: float) -> ArrayMesh:
 	var points := PackedVector3Array()
 	var surf_normals := PackedVector3Array()
 	for q in outline:
-		points.append(_point(q.x, bottom_height + q.y, wall_offset + offset))
+		points.append(_point(q.x, bottom_height + q.y, wall_offset))
 		surf_normals.append(_normal(q.x, bottom_height + q.y))
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var rs := 12
-	var count := points.size()
-	var verts := PackedVector3Array()
-	var norms := PackedVector3Array()
-	for k in count:
-		var tangent := (points[(k + 1) % count] - points[(k - 1 + count) % count]).normalized()
-		var n1 := tangent.cross(surf_normals[k]).normalized()
-		var n2 := n1.cross(tangent).normalized()
-		for m in rs:
-			var beta := TAU * float(m) / float(rs)
-			var radial := n1 * cos(beta) + n2 * sin(beta)
-			verts.append(points[k] + radial * radius)
-			norms.append(radial)
-			st.set_normal(radial)
-			st.add_vertex(points[k] + radial * radius)
-	for k in count:
-		var k2 := (k + 1) % count
-		for m in rs:
-			var m2 := (m + 1) % rs
-			_add_tri(st, verts, norms, k * rs + m, k * rs + m2, k2 * rs + m2)
-			_add_tri(st, verts, norms, k * rs + m, k2 * rs + m2, k2 * rs + m)
-	return st.commit()
+	return [points, surf_normals]
 
 
 ## Triángulo orientado según las normales (en Godot las caras frontales van en sentido horario).

@@ -81,10 +81,16 @@ Valores de partida (área 1, `scenes/areas/area_01/area_01.tscn`):
 - **Cámara**: `scenes/fx/camera_fx.tscn` (instanciado en `main.tscn`) con destello de
   estrella y lens flare del sol y una viñeta ligera. Sirve para cualquier área con un sol.
 - **Materiales**: biblioteca común en `assets/materials/` (ver su `README.md`): blanco lacado,
-  blanco satinado, cromo, aluminio cepillado, menta, lima (solo acentos), cristal claro y
-  cian, alfombra de pelo largo en espiral y los emisivos de LED y focos. Marcos de ventana y
-  de pantalla: aro de aluminio cepillado con un aro fino lima por dentro (el cromo espejo en
-  una sala azul se lee como plástico azul; queda para patas, bases y tubos finos).
+  blanco satinado, cromo, cromo de bisel, menta, lima (solo acentos), cristal claro, cian y
+  verde, alfombra de pelo largo en espiral y los emisivos de LED, focos, brillos y discos.
+  Marcos de ventana y de pantalla: bisel tipo ventana de acuario, aro de cromo estrecho y
+  plano con una banda lima plana por dentro (`BezelMesh`, `scenes/fx/bezel_mesh.gd`). El
+  cromo liso en una sala azul se lee como plástico o cristal azul: los biseles usan
+  `chrome_bezel`, que añade un entorno de estudio (brillos blancos y franja oscura).
+- **Decoración reutilizable** en `scenes/props/`: `WallNiche` (hornacina con LED y baldas),
+  `GlassOrb` (esfera de cristal), `DropPendant` (gota colgante con brillo interior) y
+  `BubbleDisc` (disco retroiluminado con aro de cromo y halo en la pared). Se colocan en
+  cada área; en el área 1 van bajo el nodo `Decor`.
 - **LED**: `LedStrip` (tubo emisivo y, si hace falta, luces pequeñas que bañan el suelo).
   Los LED de la propia sala (tragaluz, zócalo, columna, focos) los genera `RoomLeds` a partir
   de la geometría de la sala.

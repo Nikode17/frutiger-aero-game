@@ -6,7 +6,8 @@ extends Node3D
 ## en una esquina, forma un entrante con cuello (la zona de ordenadores). El perfil
 ## vertical es un rectángulo redondeado. En algunos tramos la pared forma una "ola"
 ## (a media altura se curva hacia dentro y sube así hasta el techo). Genera además la colisión, una
-## copia exterior solo para sombras, el borde del tragaluz y los marcos de ventana.
+## copia exterior solo para sombras, el borde del tragaluz y los marcos de ventana
+## (bisel de cromo con banda lima, ver BezelMesh).
 ## Los huecos se recortan en aero_wall.gdshader con los mismos parámetros.
 
 @export_tool_button("Reconstruir habitación") var rebuild_action: Callable = _build
@@ -40,8 +41,8 @@ extends Node3D
 @export var floor_material: Material
 @export var wall_material: Material
 @export var rim_material: Material
-@export var frame_material: Material          # Aro exterior de las ventanas
-@export var frame_accent_material: Material   # Aro fino interior de las ventanas
+@export var frame_material: Material          # Aro de cromo de las ventanas
+@export var frame_accent_material: Material   # Banda plana interior de las ventanas
 
 @export_group("Tragaluz")
 @export var skylight_enabled: bool = true
@@ -495,14 +496,39 @@ func _build_skylight_rim() -> void:
 	_build_tube("SkylightRim", points, normals, skylight_rim_radius, rim_material)
 
 
+## Marco en bisel: aro de cromo que monta sobre el borde del hueco y banda plana
+## interior, barridos a lo largo del contorno del hueco (BezelMesh).
 func _build_window_frame(node_name: String, w: RoomWindow) -> void:
 	var ring := _window_contour(w, 0.0, 0.0)
-	_build_tube(node_name, ring[0], ring[1], w.frame_radius, frame_material)
-	if frame_accent_material and w.accent_radius > 0.0:
-		# Aro fino interior, medio metido bajo el borde interior del aro grueso
-		var inset := w.frame_radius + w.accent_radius * 0.6
-		var accent := _window_contour(w, inset, w.accent_depth)
-		_build_tube(node_name + "Accent", accent[0], accent[1], w.accent_radius, frame_accent_material)
+	var u_inner := w.frame_overlap - w.frame_width
+	var chrome := MeshInstance3D.new()
+	chrome.name = node_name
+	chrome.mesh = BezelMesh.sweep(ring[0], ring[1], BezelMesh.chrome_profile(
+			u_inner, w.frame_width, w.frame_height, 0.012, w.accent_height - 0.002))
+	if frame_material:
+		chrome.material_override = frame_material
+	_add_generated(chrome)
+	if frame_accent_material and w.accent_width > 0.0:
+		var band := MeshInstance3D.new()
+		band.name = node_name + "Accent"
+		band.mesh = BezelMesh.sweep(ring[0], ring[1], BezelMesh.flat_band_profile(
+				u_inner + minf(w.frame_width * 0.3, 0.02), u_inner - w.accent_width,
+				w.accent_height, w.accent_height + 0.015))
+		band.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		band.material_override = frame_accent_material
+		_add_generated(band)
+	if shadow_shell_thickness > 0.0:
+		# Canto del hueco que solo proyecta sombra: da a la pared su grosor ante el sol
+		# (el marco fino ya no recorta la mancha de sol como el aro grueso de antes)
+		var reveal := MeshInstance3D.new()
+		reveal.name = node_name + "Reveal"
+		reveal.mesh = BezelMesh.sweep(ring[0], ring[1], PackedVector2Array([
+				Vector2(0.0, 0.0), Vector2(0.0, -shadow_shell_thickness)]))
+		reveal.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+		var mat := StandardMaterial3D.new()
+		mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+		reveal.material_override = mat
+		_add_generated(reveal)
 
 
 ## Contorno del óvalo de la ventana sobre la pared, encogido `inset` metros y separado
@@ -514,7 +540,7 @@ func _window_contour(w: RoomWindow, inset: float, depth: float) -> Array[PackedV
 	var ry := maxf(w.radius.y - inset, 0.01)
 	var points := PackedVector3Array()
 	var normals := PackedVector3Array()
-	var steps := 72
+	var steps := 192
 	for k in steps:
 		var ang := TAU * float(k) / float(steps)
 		var theta := theta0 + rx * cos(ang) / wall_r
