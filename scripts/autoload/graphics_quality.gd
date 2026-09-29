@@ -2,7 +2,8 @@ extends CanvasLayer
 ## Autoload GraphicsQuality: selector de calidad gráfica Alta / Media / Baja para comparar
 ## rendimiento. Se cambia en ciclo con la acción "cycle_quality" (F4) y se guarda en
 ## user://graficos.cfg. "Alta" usa los valores tal como están en la escena; Media y Baja
-## abaratan a partir de ellos (SSR, niebla, SSAO, sombras, TAA y luces LED).
+## abaratan a partir de ellos. Alta: SDFGI a resolución completa y reflejo planar en el
+## suelo (PlanarReflection); Media y Baja: sin SDFGI y el suelo con las sondas de reflexión.
 
 signal level_changed(level: int)
 
@@ -69,6 +70,7 @@ func _apply(show_label: bool) -> void:
 	# Ajustes globales del renderizador
 	vp.use_taa = not low
 	vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if low else Viewport.SCREEN_SPACE_AA_DISABLED
+	RenderingServer.gi_set_use_half_resolution(false)
 	RenderingServer.environment_set_ssr_half_size(true)
 	RenderingServer.environment_set_ssao_quality(
 			RenderingServer.ENV_SSAO_QUALITY_MEDIUM if high else RenderingServer.ENV_SSAO_QUALITY_LOW,
@@ -83,6 +85,7 @@ func _apply(show_label: bool) -> void:
 	var env := world.environment if world else null
 	if env:
 		var d := _defaults_for(env)
+		env.sdfgi_enabled = d.sdfgi_enabled and high
 		env.ssr_enabled = d.ssr_enabled and not low
 		env.ssr_max_steps = d.ssr_max_steps if high else mini(d.ssr_max_steps, 20)
 		env.ssao_enabled = d.ssao_enabled and not low
@@ -103,6 +106,7 @@ func _defaults_for(env: Environment) -> Dictionary:
 	var id := env.get_instance_id()
 	if not _env_defaults.has(id):
 		_env_defaults[id] = {
+			"sdfgi_enabled": env.sdfgi_enabled,
 			"ssr_enabled": env.ssr_enabled,
 			"ssr_max_steps": env.ssr_max_steps,
 			"ssao_enabled": env.ssao_enabled,

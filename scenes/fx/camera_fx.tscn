@@ -17,7 +17,7 @@ shader = ExtResource("3_vignette")
 [node name="CameraFx" type="Node"]
 script = ExtResource("1_fx")
 
-[node name="Flare" type="MeshInstance3D" parent="."]
+[node name="Flare" type="MeshInstance3D" parent="." groups=["no_planar_reflection"]]
 visible = false
 cast_shadow = 0
 gi_mode = 0

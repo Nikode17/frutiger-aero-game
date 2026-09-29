@@ -14,11 +14,11 @@
 
 [node name="Exterior" type="Node3D"]
 
-[node name="Terrain" type="Node3D" parent="."]
+[node name="Terrain" type="Node3D" parent="." groups=["no_planar_reflection"]]
 script = ExtResource("1_terrain")
 terrain_material = ExtResource("5_terrain_mat")
 
-[node name="Vegetation" type="Node3D" parent="."]
+[node name="Vegetation" type="Node3D" parent="." groups=["no_planar_reflection"]]
 script = ExtResource("2_vegetation")
 grass_material = ExtResource("6_grass_mat")
 flower_material = ExtResource("7_flower_mat")
@@ -30,5 +30,5 @@ script = ExtResource("3_city")
 glass_material = ExtResource("8_glass_mat")
 trim_material = ExtResource("9_trim_mat")
 
-[node name="Life" type="Node3D" parent="."]
+[node name="Life" type="Node3D" parent="." groups=["no_planar_reflection"]]
 script = ExtResource("4_life")

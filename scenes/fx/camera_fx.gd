@@ -22,7 +22,7 @@ extends Node
 
 @export_group("Enfoque")
 ## Enfoque del pase final; solo se aplica con TAA, que suaviza la imagen
-@export_range(0.0, 1.5, 0.05) var taa_sharpen: float = 0.8
+@export_range(0.0, 1.5, 0.05) var taa_sharpen: float = 0.4
 
 @onready var _flare: MeshInstance3D = $Flare
 @onready var _vignette: CanvasItem = $Vignette/Rect

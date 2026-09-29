@@ -265,6 +265,7 @@ func _build_spots() -> void:
 			bezel.position = Vector3(0.0, -0.004, 0.0)
 			bezel.material_override = bezel_material
 			bezel.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			bezel.add_to_group(PlanarReflection.HIDDEN_GROUP)
 			root.add_child(bezel)
 		var spot := SpotLight3D.new()
 		spot.name = "Spot"

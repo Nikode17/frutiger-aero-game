@@ -13,6 +13,7 @@
 [ext_resource type="Material" path="res://assets/models/area_01/materials/living_white.tres" id="9_white"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/aquarium/aquarium.tscn" id="10_aquarium"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_leds.gd" id="11_leds"]
+[ext_resource type="Script" path="res://scenes/fx/planar_reflection.gd" id="16_planar"]
 [ext_resource type="Material" path="res://scenes/fx/materials/led_cyan.tres" id="12_cyan"]
 [ext_resource type="Material" path="res://scenes/fx/materials/led_green.tres" id="13_green"]
 [ext_resource type="Material" path="res://scenes/fx/materials/downlight.tres" id="14_downlight"]
@@ -103,7 +104,7 @@ ambient_light_color = Color(0.4, 0.74, 1, 1)
 ambient_light_energy = 0.45
 reflected_light_source = 2
 tonemap_mode = 3
-tonemap_exposure = 1.0
+tonemap_exposure = 1.07
 tonemap_white = 8.0
 ssr_enabled = true
 ssr_max_steps = 32
@@ -116,15 +117,21 @@ ssao_intensity = 1.5
 ssao_power = 1.5
 ssao_detail = 0.5
 ssao_light_affect = 0.0
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_cascades = 3
+sdfgi_bounce_feedback = 0.4
+sdfgi_min_cell_size = 0.15
+sdfgi_energy = 1.5
 glow_enabled = true
-glow_levels/1 = 0.0
-glow_levels/2 = 0.7
+glow_levels/1 = 0.2
+glow_levels/2 = 0.6
 glow_levels/3 = 0.8
 glow_levels/4 = 0.5
 glow_levels/5 = 0.25
-glow_intensity = 0.5
-glow_strength = 1.0
-glow_bloom = 0.04
+glow_intensity = 0.55
+glow_strength = 1.025
+glow_bloom = 0.045
 glow_blend_mode = 1
 glow_hdr_threshold = 1.25
 glow_hdr_scale = 2.0
@@ -188,6 +195,10 @@ intensity = 0.7
 origin_offset = Vector3(0, -0.8, 0.3)
 box_projection = true
 enable_shadows = true
+
+[node name="PlanarReflection" type="Node3D" parent="."]
+script = ExtResource("16_planar")
+floor_material = SubResource("ShaderMaterial_floor")
 
 [node name="SpawnPoint" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.05, 5.2)

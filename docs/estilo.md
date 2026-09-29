@@ -62,12 +62,15 @@ Valores de partida (área 1, `scenes/areas/area_01/area_01.tscn`):
 
 - **Sol**: `DirectionalLight3D` fuerte con sombras nítidas (poco blur). La niebla
   volumétrica da los haces visibles por el tragaluz y las ventanas.
-- **Reflejos y luz rebotada**: ReflectionProbes con box projection ajustadas a cada espacio
-  (sala principal y entrante), actualización única y sombras en la captura: reflejos
-  estables que no dependen de hacia dónde mira la cámara. Sin SDFGI ni VoxelGI: su reflejo
-  especular sustituye al de las probes y se desplaza por el suelo al girar la cámara. El
-  rebote se aproxima con luz ambiente azul saturada y poco intensa. SSR solo como
-  complemento para los reflejos de contacto de los muebles.
+- **Reflejos y luz rebotada**: en calidad Alta, SDFGI a resolución completa para el rebote
+  de color y reflejo planar en el suelo (`scenes/fx/planar_reflection.gd`: cámara reflejada a
+  un SubViewport a media resolución con un entorno barato; `leaf_floor.gdshader` lo muestrea
+  con fresnel y un leve desenfoque y lo funde al material normal donde el suelo se curva). El
+  reflejo de SDFGI en el suelo va con retraso al girar la cámara y se ve como una mancha que
+  "nada": por eso el suelo no lo usa. Lo que no debe salir en el reflejo (terreno bajo la
+  sala, vegetación exterior, objetos pequeños) va en el grupo `no_planar_reflection`; las
+  partículas se ocultan solas. En Media y Baja no hay SDFGI y los reflejos son de las
+  ReflectionProbes con box projection (sala principal y entrante, actualización única).
 - **Imagen**: tonemap ACES con algo más de exposición, glow en modo *screen* con el umbral
   algo por encima del blanco de las paredes (~1,25) para que brillen reflejos, sol y LED sin
   velar la sala, saturación y contraste subidos en `adjustment`. Niebla volumétrica poco

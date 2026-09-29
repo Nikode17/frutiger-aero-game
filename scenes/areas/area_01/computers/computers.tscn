@@ -25,10 +25,10 @@ transform = Transform3D(0.967268, 0, 0.253758, 0, 1, 0, -0.253758, 0, 0.967268, 
 [node name="ImacRight" parent="." instance=ExtResource("5_imac")]
 transform = Transform3D(0.967268, 0, -0.253758, 0, 1, 0, 0.253758, 0, 0.967268, 0.9205, 0.7800, -4.9161)
 
-[node name="KeyboardLeft" parent="." instance=ExtResource("6_kb")]
+[node name="KeyboardLeft" parent="." groups=["no_planar_reflection"] instance=ExtResource("6_kb")]
 transform = Transform3D(0.967268, 0, 0.253758, 0, 1, 0, -0.253758, 0, 0.967268, -0.8469, 0.7800, -4.6356)
 
-[node name="KeyboardRight" parent="." instance=ExtResource("6_kb")]
+[node name="KeyboardRight" parent="." groups=["no_planar_reflection"] instance=ExtResource("6_kb")]
 transform = Transform3D(0.967268, 0, -0.253758, 0, 1, 0, 0.253758, 0, 0.967268, 0.8469, 0.7800, -4.6356)
 
 [node name="ChairLeft" parent="." instance=ExtResource("7_chair")]
@@ -37,13 +37,13 @@ transform = Transform3D(-0.922538, 0, -0.385906, 0, 1, 0, 0.385906, 0, -0.922538
 [node name="ChairRight" parent="." instance=ExtResource("7_chair")]
 transform = Transform3D(-0.893371, 0, 0.449319, 0, 1, 0, -0.449319, 0, -0.893371, 0.6870, 0.0560, -4.0262)
 
-[node name="Succulent" parent="." instance=ExtResource("8_succ")]
+[node name="Succulent" parent="." groups=["no_planar_reflection"] instance=ExtResource("8_succ")]
 transform = Transform3D(0.939693, 0, 0.342020, 0, 1, 0, -0.342020, 0, 0.939693, -1.7200, 0.7800, -4.5200)
 
-[node name="DropletCyan" parent="." instance=ExtResource("9_dcyan")]
+[node name="DropletCyan" parent="." groups=["no_planar_reflection"] instance=ExtResource("9_dcyan")]
 transform = Transform3D(0.978148, 0, 0.207912, 0, 1, 0, -0.207912, 0, 0.978148, -0.0900, 0.7800, -5.0800)
 
-[node name="DropletMint" parent="." instance=ExtResource("10_dmint")]
+[node name="DropletMint" parent="." groups=["no_planar_reflection"] instance=ExtResource("10_dmint")]
 transform = Transform3D(0.951057, 0, -0.309017, 0, 1, 0, 0.309017, 0, 0.951057, 0.1000, 0.7800, -5.1000)
 
 [node name="FillLight" type="OmniLight3D" parent="."]

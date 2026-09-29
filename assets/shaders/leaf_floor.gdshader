@@ -22,10 +22,34 @@ uniform float edge_softness = 0.012;
 uniform float vein_strength : hint_range(0.0, 1.0) = 0.7;
 uniform vec2 pattern_offset = vec2(0.0, 0.0);
 
+// Reflejo planar (calidad Alta): lo pone PlanarReflection. En la zona plana sustituye al
+// reflejo del motor (sondas/SDFGI); donde el suelo empieza a curvarse hacia la pared
+// se funde de vuelta al material normal.
+uniform sampler2D planar_tex : filter_linear, repeat_disable;
+uniform mat4 planar_view_proj;
+uniform float planar_strength : hint_range(0.0, 1.0) = 0.0;   // 0 = sin reflejo planar
+uniform float planar_intensity : hint_range(0.0, 2.0) = 1.2;
+uniform float planar_blur = 0.0022;          // radio del desenfoque (fracción de pantalla)
+uniform float planar_leaf_blur = 2.5;        // las hojas, algo más rugosas, desenfocan más
+uniform float planar_flat_angle = 10.0;      // pendiente (grados) hasta la que el reflejo es planar
+uniform float planar_fade_angle = 18.0;      // pendiente a la que ya solo queda el reflejo del motor
+
 varying vec3 world_pos;
 
 void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+}
+
+// Reflejo planar desenfocado: disco de 8 muestras más el centro
+vec3 planar_sample(vec2 uv, float radius) {
+	const vec2 TAPS[8] = vec2[8](vec2(1.0, 0.0), vec2(0.707, 0.707), vec2(0.0, 1.0), vec2(-0.707, 0.707),
+			vec2(-1.0, 0.0), vec2(-0.707, -0.707), vec2(0.0, -1.0), vec2(0.707, -0.707));
+	vec3 acc = textureLod(planar_tex, uv, 0.0).rgb * 2.0;
+	for (int i = 0; i < 8; i++) {
+		vec2 o = TAPS[i] * radius * (i % 2 == 0 ? 1.0 : 0.6);
+		acc += textureLod(planar_tex, clamp(uv + o, vec2(0.001), vec2(0.999)), 0.0).rgb;
+	}
+	return acc / 10.0;
 }
 
 float hash21(vec2 p) {
@@ -94,8 +118,30 @@ void fragment() {
 	vec3 col = mix(base_color, leaf_color, leaf);
 	col = mix(col, vein_color, vein);
 
+	// La curva suelo-pared es muy suave: se decide por la pendiente, no por la altura
+	vec3 world_normal = normalize((INV_VIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
+	float slope = degrees(acos(clamp(world_normal.y, -1.0, 1.0)));
+	float planar = planar_strength * (1.0 - smoothstep(planar_flat_angle, planar_fade_angle, slope));
 	ALBEDO = col;
 	METALLIC = metallic_value;
 	ROUGHNESS = mix(roughness_value, leaf_roughness, leaf);
 	SPECULAR = specular_value;
+	if (planar > 0.001) {
+		// Punto del suelo proyectado con la cámara reflejada (está en el plano, así que
+		// coincide con su reflejo): no depende de hacia dónde mira el jugador
+		vec4 clip = planar_view_proj * vec4(world_pos, 1.0);
+		vec2 uv = clip.xy / clip.w * vec2(0.5, -0.5) + 0.5;
+		// Más desenfoque en las hojas y donde el suelo empieza a curvarse
+		float blur = planar_blur * mix(1.0, planar_leaf_blur, leaf) * (1.0 + slope * 0.15);
+		vec3 refl = planar_sample(uv, blur);
+		// Fresnel con la misma reflectancia que daba el metallic sobre este color
+		vec3 f0 = mix(vec3(0.04), col, metallic_value);
+		float ndv = clamp(dot(NORMAL, VIEW), 0.0, 1.0);
+		vec3 fres = f0 + (1.0 - f0) * pow(1.0 - ndv, 5.0);
+		EMISSION = refl * fres * planar_intensity * planar;
+		// Sin reflejo del motor en la zona plana, manteniendo el difuso
+		ALBEDO = col * mix(1.0, 1.0 - metallic_value, planar);
+		METALLIC = mix(metallic_value, 0.0, planar);
+		SPECULAR = mix(specular_value, 0.0, planar);
+	}
 }

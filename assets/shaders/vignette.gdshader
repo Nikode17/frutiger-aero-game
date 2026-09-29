@@ -21,7 +21,10 @@ void fragment() {
 		vec3 w = textureLod(screen_tex, SCREEN_UV + vec2(-px.x, 0.0), 0.0).rgb;
 		vec3 lo = min(c, min(min(n, s), min(e, w)));
 		vec3 hi = max(c, max(max(n, s), max(e, w)));
-		vec3 sharp = c + (c * 4.0 - n - s - e - w) * 0.25 * sharpen;
+		// Sin enfoque en luces y brillos, que si no se ven dentados
+		float lum = dot(c, vec3(0.2126, 0.7152, 0.0722));
+		float amount = sharpen * (1.0 - smoothstep(0.7, 0.95, lum));
+		vec3 sharp = c + (c * 4.0 - n - s - e - w) * 0.25 * amount;
 		c = clamp(sharp, lo, hi);
 	}
 	// Elipse que sigue la forma de la pantalla (0 en el centro, ~1.41 en las esquinas)
