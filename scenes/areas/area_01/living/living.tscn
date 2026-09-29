@@ -17,6 +17,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.3)
 
 [node name="ShagShells" type="Node" parent="Rug"]
 script = ExtResource("9_shells")
+flatten_nodes = Array[NodePath]([NodePath("../../CoffeeTable"), NodePath("../../ChairLeft"), NodePath("../../ChairRight")])
+flatten_radii = PackedFloat32Array(0.36, 0.31, 0.31)
 
 [node name="Sofa" parent="." instance=ExtResource("5_sofa")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 1.15)

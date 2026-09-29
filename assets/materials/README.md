@@ -11,13 +11,13 @@ mejor subir la luz que el albedo.
 |---|---|---|
 | `white_lacquer` | Blanco lacado (albedo 0.9 sin tinte, rugosidad 0.2, clearcoat) | Mesas, macetas, bases, pies de disco, carcasas blancas, borde del tragaluz |
 | `white_satin` | Blanco suave, rugoso, algo de brillo textil | Cojines e interiores tapizados |
-| `chrome` | Metal pulido (metallic 1, rugosidad 0.1) | Marcos, patas, estructuras, aros de focos |
-| `brushed_aluminium` | Aluminio cepillado (metallic 1, rugosidad 0.4) | Remates y piezas metálicas mates (aún sin usar en el área 1) |
+| `chrome` | Metal pulido (metallic 1, rugosidad 0.1) | Patas, bases, ruedas, tubos finos, aros de focos |
+| `brushed_aluminium` | Aluminio cepillado (metallic 1, rugosidad 0.4; albedo gris algo cálido para que en salas azules se lea plata y no azul) | Aros gruesos de ventanas y pantallas, remates metálicos mates |
 | `lime_gloss` | Verde lima saturado y brillante | **Solo acentos**: aros finos, ribetes, remates. Nunca superficies grandes |
 | `mint_soft` | Menta con clearcoat suave | Carcasas de butacas, sofás y sillas |
 | `glass_clear` | Cristal (`glass.gdshader`): transparencia, Fresnel, refracción sutil | Tapas de mesa, mamparas claras |
 | `glass_cyan` | Cristal cian más tintado y opaco | Cantos de cristal, mamparas y piezas de color |
-| `shag_rug_swirl` | Alfombra de pelo largo en espiral cobalto → turquesa → verde (`shag_rug.gdshader`) | Alfombras; en calidad Alta añadir un nodo `ShagShells` (`scenes/fx/shag_shells.gd`) como hijo de la alfombra |
+| `shag_rug_swirl` | Alfombra de pelo largo en espiral cobalto → turquesa → verde (`shag_rug.gdshader`) | Alfombras; en calidad Alta añadir un nodo `ShagShells` (`scenes/fx/shag_shells.gd`) como hijo de la alfombra; sus `flatten_nodes` aplastan el pelo bajo los muebles |
 | `led_cyan`, `led_green` | Emisivos | Tubos de `LedStrip` y `RoomLeds` |
 | `downlight` | Emisivo cálido | Disco de los focos empotrados |
 

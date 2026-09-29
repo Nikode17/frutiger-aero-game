@@ -83,7 +83,8 @@ Valores de partida (área 1, `scenes/areas/area_01/area_01.tscn`):
 - **Materiales**: biblioteca común en `assets/materials/` (ver su `README.md`): blanco lacado,
   blanco satinado, cromo, aluminio cepillado, menta, lima (solo acentos), cristal claro y
   cian, alfombra de pelo largo en espiral y los emisivos de LED y focos. Marcos de ventana y
-  de pantalla: aro de cromo con un aro fino lima por dentro.
+  de pantalla: aro de aluminio cepillado con un aro fino lima por dentro (el cromo espejo en
+  una sala azul se lee como plástico azul; queda para patas, bases y tubos finos).
 - **LED**: `LedStrip` (tubo emisivo y, si hace falta, luces pequeñas que bañan el suelo).
   Los LED de la propia sala (tragaluz, zócalo, columna, focos) los genera `RoomLeds` a partir
   de la geometría de la sala.

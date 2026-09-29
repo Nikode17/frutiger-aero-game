@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_shell.gd" id="1_shell"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_window.gd" id="1_window"]
@@ -19,6 +19,7 @@
 [ext_resource type="Material" path="res://assets/materials/downlight.tres" id="14_downlight"]
 [ext_resource type="Material" path="res://assets/materials/chrome.tres" id="15_chrome"]
 [ext_resource type="Material" path="res://assets/materials/lime_gloss.tres" id="17_lime"]
+[ext_resource type="Material" path="res://assets/materials/brushed_aluminium.tres" id="18_alu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
 shader = ExtResource("2_leaf")
@@ -162,7 +163,7 @@ script = ExtResource("1_shell")
 floor_material = SubResource("ShaderMaterial_floor")
 wall_material = SubResource("ShaderMaterial_wall")
 rim_material = ExtResource("9_white")
-frame_material = ExtResource("15_chrome")
+frame_material = ExtResource("18_alu")
 frame_accent_material = ExtResource("17_lime")
 windows = Array[ExtResource("1_window")]([SubResource("Resource_window_living"), SubResource("Resource_window_back")])
 waves = Array[ExtResource("1_wave")]([SubResource("Resource_wave_living"), SubResource("Resource_wave_south"), SubResource("Resource_wave_west")])
@@ -210,7 +211,7 @@ transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 
 
 [node name="AquariumScreen" type="Node3D" parent="."]
 script = ExtResource("8_screen")
-frame_material = ExtResource("15_chrome")
+frame_material = ExtResource("18_alu")
 accent_material = ExtResource("17_lime")
 
 [node name="AquariumViewport" type="SubViewport" parent="AquariumScreen"]

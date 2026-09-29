@@ -2,6 +2,6 @@
 
 [resource]
 resource_name = "brushed_aluminium"
-albedo_color = Color(0.88, 0.89, 0.9, 1)
+albedo_color = Color(0.76, 0.73, 0.68, 1)
 metallic = 1.0
 roughness = 0.4

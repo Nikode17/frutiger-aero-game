@@ -5,14 +5,16 @@ shader_type spatial;
 // - Versión plana (Media/Baja): mechones con relieve en la normal y oclusión en el color.
 // - Capas shell (Alta, ver scenes/fx/shag_shells.gd): el mismo shader con shell_mode activo;
 //   shell_layer va de 0 (raíz, capa completa y oscura) a 1 (puntas). Cada capa se desplaza
-//   a lo largo de la normal y descarta lo que queda entre mechones.
+//   a lo largo de la normal y descarta lo que queda entre mechones. Bajo los muebles el
+//   pelo se aplasta (flatten_areas, lo rellena ShagShells).
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
 
 group_uniforms colores;
 uniform vec3 color_a : source_color = vec3(0.08, 0.24, 0.8);   // cobalto
 uniform vec3 color_b : source_color = vec3(0.0, 0.6, 0.62);    // turquesa
-uniform vec3 color_c : source_color = vec3(0.14, 0.56, 0.1);   // verde césped
+uniform vec3 color_c : source_color = vec3(0.12, 0.46, 0.13);  // verde césped
 uniform float color_variation : hint_range(0.0, 0.5) = 0.16;   // brillo distinto por mechón
+uniform float saturation : hint_range(0.0, 1.5) = 0.9;          // saturación general
 uniform float root_shade : hint_range(0.0, 1.0) = 0.42;        // oscuridad entre mechones
 
 group_uniforms espiral;
@@ -35,6 +37,10 @@ uniform float shell_layer : hint_range(0.0, 1.0) = 0.0;
 uniform float pile_height = 0.032;              // largo del pelo (m)
 uniform float strand_bend = 0.02;               // inclinación común de las puntas, "peinado" (m)
 uniform float strand_lean : hint_range(0.0, 0.8) = 0.55;   // inclinación propia de cada mechón (en celdas)
+// Zonas donde un mueble aplasta el pelo, en espacio local: (x, z, radio, transición)
+uniform vec4 flatten_areas[4];
+uniform int flatten_count = 0;
+uniform float flatten_height : hint_range(0.0, 1.0) = 0.2;   // altura del pelo aplastado (fracción)
 
 varying vec3 v_pos;
 varying vec3 v_nrm;
@@ -102,6 +108,20 @@ vec3 spiral_color(vec2 p, float jitter) {
 	return mix(color_b, col, smoothstep(center_radius * 0.55, center_radius, rn));
 }
 
+// Fracción de altura del pelo en p (1 = pelo completo)
+float pile_scale(vec2 p) {
+	float k = 1.0;
+	for (int i = 0; i < 4; i++) {
+		if (i >= flatten_count) {
+			break;
+		}
+		vec4 a = flatten_areas[i];
+		float d = distance(p, a.xy);
+		k = min(k, mix(flatten_height, 1.0, smoothstep(a.z, a.z + max(a.w, 1e-3), d)));
+	}
+	return k;
+}
+
 vec3 local_to_view(vec3 v, mat4 view_matrix, mat4 model_matrix) {
 	return normalize((view_matrix * model_matrix * vec4(v, 0.0)).xyz);
 }
@@ -127,7 +147,7 @@ void fragment() {
 	vec4 t = tuft(q, strand_lean * layer * layer);
 	float d = t.x;
 	float id = t.y;
-	float tuft_height = 0.6 + 0.4 * id;
+	float tuft_height = (0.6 + 0.4 * id) * (shell_mode ? pile_scale(p) : 1.0);
 	// De lejos los mechones son más pequeños que un píxel: se funden para que no parpadeen
 	float px = fwidth(q.x) + fwidth(q.y);
 	float detail = 1.0 - smoothstep(0.3, 0.9, px);
@@ -163,7 +183,8 @@ void fragment() {
 	if (top) {
 		NORMAL = local_to_view(n_local, VIEW_MATRIX, MODEL_MATRIX);
 	}
-	ALBEDO = col * shade;
+	col *= shade;
+	ALBEDO = max(mix(vec3(dot(col, vec3(0.2126, 0.7152, 0.0722))), col, saturation), vec3(0.0));
 	METALLIC = 0.0;
 	ROUGHNESS = roughness_value;
 	SPECULAR = specular_value;
