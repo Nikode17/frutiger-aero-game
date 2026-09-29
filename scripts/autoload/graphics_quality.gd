@@ -2,7 +2,7 @@ extends CanvasLayer
 ## Autoload GraphicsQuality: selector de calidad gráfica Alta / Media / Baja para comparar
 ## rendimiento. Se cambia en ciclo con la acción "cycle_quality" (F4) y se guarda en
 ## user://graficos.cfg. "Alta" usa los valores tal como están en la escena; Media y Baja
-## abaratan a partir de ellos (GI, reflejos, niebla, SSAO, sombras, TAA y luces LED).
+## abaratan a partir de ellos (SSR, niebla, SSAO, sombras, TAA y luces LED).
 
 signal level_changed(level: int)
 
@@ -69,9 +69,6 @@ func _apply(show_label: bool) -> void:
 	# Ajustes globales del renderizador
 	vp.use_taa = not low
 	vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if low else Viewport.SCREEN_SPACE_AA_DISABLED
-	RenderingServer.gi_set_use_half_resolution(true)
-	RenderingServer.environment_set_sdfgi_ray_count(
-			RenderingServer.ENV_SDFGI_RAY_COUNT_16 if high else RenderingServer.ENV_SDFGI_RAY_COUNT_8)
 	RenderingServer.environment_set_ssr_half_size(true)
 	RenderingServer.environment_set_ssao_quality(
 			RenderingServer.ENV_SSAO_QUALITY_MEDIUM if high else RenderingServer.ENV_SSAO_QUALITY_LOW,
@@ -86,13 +83,10 @@ func _apply(show_label: bool) -> void:
 	var env := world.environment if world else null
 	if env:
 		var d := _defaults_for(env)
-		env.sdfgi_enabled = d.sdfgi_enabled and not low
 		env.ssr_enabled = d.ssr_enabled and not low
 		env.ssr_max_steps = d.ssr_max_steps if high else mini(d.ssr_max_steps, 20)
 		env.ssao_enabled = d.ssao_enabled and not low
 		env.volumetric_fog_enabled = d.volumetric_fog_enabled and not low
-		# Sin SDFGI la sala pierde rebote: se compensa con algo más de luz ambiente
-		env.ambient_light_energy = d.ambient_light_energy * (1.25 if low else 1.0)
 
 	# Luces LED reales (los tubos emisivos siguen brillando)
 	for light in get_tree().get_nodes_in_group(LedStrip.LIGHT_GROUP):
@@ -109,11 +103,9 @@ func _defaults_for(env: Environment) -> Dictionary:
 	var id := env.get_instance_id()
 	if not _env_defaults.has(id):
 		_env_defaults[id] = {
-			"sdfgi_enabled": env.sdfgi_enabled,
 			"ssr_enabled": env.ssr_enabled,
 			"ssr_max_steps": env.ssr_max_steps,
 			"ssao_enabled": env.ssao_enabled,
 			"volumetric_fog_enabled": env.volumetric_fog_enabled,
-			"ambient_light_energy": env.ambient_light_energy,
 		}
 	return _env_defaults[id]

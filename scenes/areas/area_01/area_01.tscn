@@ -99,11 +99,11 @@ radiance_size = 3
 background_mode = 2
 sky = SubResource("Sky_area")
 ambient_light_source = 2
-ambient_light_color = Color(0.55, 0.85, 1, 1)
-ambient_light_energy = 0.9
+ambient_light_color = Color(0.4, 0.74, 1, 1)
+ambient_light_energy = 0.45
 reflected_light_source = 2
 tonemap_mode = 3
-tonemap_exposure = 0.97
+tonemap_exposure = 1.0
 tonemap_white = 8.0
 ssr_enabled = true
 ssr_max_steps = 32
@@ -116,12 +116,6 @@ ssao_intensity = 1.5
 ssao_power = 1.5
 ssao_detail = 0.5
 ssao_light_affect = 0.0
-sdfgi_enabled = true
-sdfgi_use_occlusion = true
-sdfgi_cascades = 3
-sdfgi_bounce_feedback = 0.4
-sdfgi_min_cell_size = 0.15
-sdfgi_energy = 1.5
 glow_enabled = true
 glow_levels/1 = 0.0
 glow_levels/2 = 0.7
@@ -137,7 +131,6 @@ glow_hdr_scale = 2.0
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.015
 volumetric_fog_albedo = Color(0.92, 0.97, 1, 1)
-volumetric_fog_gi_inject = 0.1
 volumetric_fog_anisotropy = 0.45
 volumetric_fog_length = 24.0
 volumetric_fog_ambient_inject = 0.02
@@ -181,10 +174,20 @@ windows = Array[ExtResource("1_window")]([SubResource("Resource_window_living"),
 waves = Array[ExtResource("1_wave")]([SubResource("Resource_wave_living"), SubResource("Resource_wave_south"), SubResource("Resource_wave_west")])
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 2.4, -1.5)
-size = Vector3(22, 5.4, 22)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+size = Vector3(16, 4.8, 13)
+intensity = 0.7
+origin_offset = Vector3(2.5, -0.7, 2.5)
 box_projection = true
-interior = true
+enable_shadows = true
+
+[node name="PocketProbe" type="ReflectionProbe" parent="."]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -7.564, 2.4, -7.564)
+size = Vector3(6.9, 4.8, 6.6)
+intensity = 0.7
+origin_offset = Vector3(0, -0.8, 0.3)
+box_projection = true
+enable_shadows = true
 
 [node name="SpawnPoint" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.05, 5.2)

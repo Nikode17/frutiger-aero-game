@@ -80,7 +80,8 @@ toggle_fps={
 
 anti_aliasing/quality/screen_space_aa=0
 anti_aliasing/quality/use_taa=true
-global_illumination/gi/use_half_resolution=true
+reflections/reflection_atlas/reflection_size=512
+reflections/reflection_atlas/reflection_count=8
 environment/glow/upscale_mode=0
 environment/volumetric_fog/volume_size=48
 environment/volumetric_fog/volume_depth=48

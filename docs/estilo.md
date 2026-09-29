@@ -62,7 +62,12 @@ Valores de partida (área 1, `scenes/areas/area_01/area_01.tscn`):
 
 - **Sol**: `DirectionalLight3D` fuerte con sombras nítidas (poco blur). La niebla
   volumétrica da los haces visibles por el tragaluz y las ventanas.
-- **Luz rebotada**: SDFGI (no necesita horneado; la sala se genera por código).
+- **Reflejos y luz rebotada**: ReflectionProbes con box projection ajustadas a cada espacio
+  (sala principal y entrante), actualización única y sombras en la captura: reflejos
+  estables que no dependen de hacia dónde mira la cámara. Sin SDFGI ni VoxelGI: su reflejo
+  especular sustituye al de las probes y se desplaza por el suelo al girar la cámara. El
+  rebote se aproxima con luz ambiente azul saturada y poco intensa. SSR solo como
+  complemento para los reflejos de contacto de los muebles.
 - **Imagen**: tonemap ACES con algo más de exposición, glow en modo *screen* con el umbral
   algo por encima del blanco de las paredes (~1,25) para que brillen reflejos, sol y LED sin
   velar la sala, saturación y contraste subidos en `adjustment`. Niebla volumétrica poco
