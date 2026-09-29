@@ -1,7 +1,0 @@
-[gd_resource type="StandardMaterial3D" format=3]
-
-[resource]
-resource_name = "living_white_soft"
-albedo_color = Color(0.96, 0.98, 0.97, 1)
-roughness = 0.38
-metallic_specular = 0.4

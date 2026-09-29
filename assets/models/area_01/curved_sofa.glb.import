@@ -43,13 +43,13 @@ _subresources={
 "materials": {
 "pod_inner": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_white_soft.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_white_soft.tres"
+"use_external/fallback_path": "res://assets/materials/white_satin.tres",
+"use_external/path": "res://assets/materials/white_satin.tres"
 },
 "pod_outer": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_mint.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_mint.tres"
+"use_external/fallback_path": "res://assets/materials/mint_soft.tres",
+"use_external/path": "res://assets/materials/mint_soft.tres"
 }
 }
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/models/area_01/living_rug.glb" id="1_rug"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/pod_chair.tscn" id="2_chair"]
@@ -6,13 +6,17 @@
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/living_plant.tscn" id="4_plant"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/curved_sofa.tscn" id="5_sofa"]
 [ext_resource type="Script" path="res://scenes/fx/led_strip.gd" id="6_led"]
-[ext_resource type="Material" path="res://scenes/fx/materials/led_cyan.tres" id="7_cyan"]
-[ext_resource type="Material" path="res://scenes/fx/materials/led_green.tres" id="8_green"]
+[ext_resource type="Material" path="res://assets/materials/led_cyan.tres" id="7_cyan"]
+[ext_resource type="Material" path="res://assets/materials/led_green.tres" id="8_green"]
+[ext_resource type="Script" path="res://scenes/fx/shag_shells.gd" id="9_shells"]
 
 [node name="Living" type="Node3D"]
 
 [node name="Rug" parent="." instance=ExtResource("1_rug")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.3)
+
+[node name="ShagShells" type="Node" parent="Rug"]
+script = ExtResource("9_shells")
 
 [node name="Sofa" parent="." instance=ExtResource("5_sofa")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 1.15)

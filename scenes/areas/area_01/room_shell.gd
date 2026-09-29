@@ -40,7 +40,8 @@ extends Node3D
 @export var floor_material: Material
 @export var wall_material: Material
 @export var rim_material: Material
-@export var frame_material: Material
+@export var frame_material: Material          # Aro exterior de las ventanas
+@export var frame_accent_material: Material   # Aro fino interior de las ventanas
 
 @export_group("Tragaluz")
 @export var skylight_enabled: bool = true
@@ -495,18 +496,33 @@ func _build_skylight_rim() -> void:
 
 
 func _build_window_frame(node_name: String, w: RoomWindow) -> void:
+	var ring := _window_contour(w, 0.0, 0.0)
+	_build_tube(node_name, ring[0], ring[1], w.frame_radius, frame_material)
+	if frame_accent_material and w.accent_radius > 0.0:
+		# Aro fino interior, medio metido bajo el borde interior del aro grueso
+		var inset := w.frame_radius + w.accent_radius * 0.6
+		var accent := _window_contour(w, inset, w.accent_depth)
+		_build_tube(node_name + "Accent", accent[0], accent[1], w.accent_radius, frame_accent_material)
+
+
+## Contorno del óvalo de la ventana sobre la pared, encogido `inset` metros y separado
+## `depth` metros hacia la sala. Devuelve [puntos, normales interiores].
+func _window_contour(w: RoomWindow, inset: float, depth: float) -> Array[PackedVector3Array]:
 	var theta0 := deg_to_rad(w.angle_deg)
 	var wall_r := _plan_radius(theta0)
+	var rx := maxf(w.radius.x - inset, 0.01)
+	var ry := maxf(w.radius.y - inset, 0.01)
 	var points := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var steps := 72
 	for k in steps:
 		var ang := TAU * float(k) / float(steps)
-		var theta := theta0 + w.radius.x * cos(ang) / wall_r
-		var psi := _wall_psi(w.center_height + w.radius.y * sin(ang))
-		points.append(_surface_point(theta, psi))
-		normals.append(_interior_normal(theta, psi))
-	_build_tube(node_name, points, normals, w.frame_radius, frame_material)
+		var theta := theta0 + rx * cos(ang) / wall_r
+		var psi := _wall_psi(w.center_height + ry * sin(ang))
+		var n := _interior_normal(theta, psi)
+		points.append(_surface_point(theta, psi) + n * depth)
+		normals.append(n)
+	return [points, normals]
 
 
 # --- Sincronización con el shader de pared -----------------------------------------

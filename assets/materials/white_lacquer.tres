@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "white_lacquer"
+albedo_color = Color(0.9, 0.9, 0.9, 1)
+roughness = 0.2
+clearcoat_enabled = true
+clearcoat = 0.8
+clearcoat_roughness = 0.06

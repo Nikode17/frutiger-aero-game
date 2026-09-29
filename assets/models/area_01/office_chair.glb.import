@@ -41,20 +41,30 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "materials": {
+"chair_inner": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/materials/white_satin.tres",
+"use_external/path": "res://assets/materials/white_satin.tres"
+},
+"chair_rim": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/materials/lime_gloss.tres",
+"use_external/path": "res://assets/materials/lime_gloss.tres"
+},
 "living_chrome": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_chrome.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_chrome.tres"
+"use_external/fallback_path": "res://assets/materials/chrome.tres",
+"use_external/path": "res://assets/materials/chrome.tres"
 },
 "living_mint": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_mint.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_mint.tres"
+"use_external/fallback_path": "res://assets/materials/mint_soft.tres",
+"use_external/path": "res://assets/materials/mint_soft.tres"
 },
 "living_white": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_white.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_white.tres"
+"use_external/fallback_path": "res://assets/materials/lime_gloss.tres",
+"use_external/path": "res://assets/materials/lime_gloss.tres"
 }
 }
 }

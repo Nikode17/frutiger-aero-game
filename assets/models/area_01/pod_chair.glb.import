@@ -43,28 +43,28 @@ _subresources={
 "materials": {
 "living_chrome": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_chrome.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_chrome.tres"
+"use_external/fallback_path": "res://assets/materials/chrome.tres",
+"use_external/path": "res://assets/materials/chrome.tres"
 },
 "living_white": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_white.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_white.tres"
+"use_external/fallback_path": "res://assets/materials/white_lacquer.tres",
+"use_external/path": "res://assets/materials/white_lacquer.tres"
 },
 "pod_inner": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_white_soft.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_white_soft.tres"
+"use_external/fallback_path": "res://assets/materials/white_satin.tres",
+"use_external/path": "res://assets/materials/white_satin.tres"
 },
 "pod_outer": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_mint.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_mint.tres"
+"use_external/fallback_path": "res://assets/materials/mint_soft.tres",
+"use_external/path": "res://assets/materials/mint_soft.tres"
 },
 "pod_rim": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_mint.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_mint.tres"
+"use_external/fallback_path": "res://assets/materials/mint_soft.tres",
+"use_external/path": "res://assets/materials/mint_soft.tres"
 }
 }
 }

@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/glass.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "glass_cyan"
+shader = ExtResource("1_shader")
+shader_parameter/tint = Color(0.25, 0.78, 1, 1)
+shader_parameter/surface_color = Color(0.32, 0.86, 1, 1)
+shader_parameter/body_opacity = 0.55
+shader_parameter/edge_opacity = 0.85
+shader_parameter/fresnel_power = 3.0
+shader_parameter/refraction = 0.02
+shader_parameter/roughness_value = 0.03
+shader_parameter/specular_value = 0.6

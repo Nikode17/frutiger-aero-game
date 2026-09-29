@@ -43,18 +43,18 @@ _subresources={
 "materials": {
 "living_chrome": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_chrome.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_chrome.tres"
+"use_external/fallback_path": "res://assets/materials/chrome.tres",
+"use_external/path": "res://assets/materials/chrome.tres"
 },
 "living_glass": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_glass.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_glass.tres"
+"use_external/fallback_path": "res://assets/materials/glass_clear.tres",
+"use_external/path": "res://assets/materials/glass_clear.tres"
 },
 "living_glass_edge": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_glass_edge.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_glass_edge.tres"
+"use_external/fallback_path": "res://assets/materials/glass_cyan.tres",
+"use_external/path": "res://assets/materials/glass_cyan.tres"
 }
 }
 }

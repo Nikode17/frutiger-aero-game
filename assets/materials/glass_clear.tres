@@ -1,0 +1,15 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/glass.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "glass_clear"
+shader = ExtResource("1_shader")
+shader_parameter/tint = Color(0.93, 0.98, 1, 1)
+shader_parameter/surface_color = Color(0.8, 0.93, 1, 1)
+shader_parameter/body_opacity = 0.04
+shader_parameter/edge_opacity = 0.45
+shader_parameter/fresnel_power = 4.0
+shader_parameter/refraction = 0.015
+shader_parameter/roughness_value = 0.02
+shader_parameter/specular_value = 0.6

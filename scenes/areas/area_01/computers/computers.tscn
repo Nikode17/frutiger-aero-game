@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" path="res://assets/models/area_01/droplet_cyan.glb" id="9_dcyan"]
 [ext_resource type="PackedScene" path="res://assets/models/area_01/droplet_mint.glb" id="10_dmint"]
 [ext_resource type="Script" path="res://scenes/fx/led_strip.gd" id="11_led"]
-[ext_resource type="Material" path="res://scenes/fx/materials/led_cyan.tres" id="12_cyan"]
+[ext_resource type="Material" path="res://assets/materials/led_cyan.tres" id="12_cyan"]
 
 [node name="Computers" type="Node3D"]
 

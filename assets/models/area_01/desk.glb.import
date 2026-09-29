@@ -41,10 +41,15 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "materials": {
+"desk_trim": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/materials/lime_gloss.tres",
+"use_external/path": "res://assets/materials/lime_gloss.tres"
+},
 "living_white": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_white.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_white.tres"
+"use_external/fallback_path": "res://assets/materials/white_lacquer.tres",
+"use_external/path": "res://assets/materials/white_lacquer.tres"
 }
 }
 }

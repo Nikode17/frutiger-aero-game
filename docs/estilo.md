@@ -80,6 +80,10 @@ Valores de partida (área 1, `scenes/areas/area_01/area_01.tscn`):
   (`scripts/autoload/graphics_quality.gd`); Alta usa los valores de la escena.
 - **Cámara**: `scenes/fx/camera_fx.tscn` (instanciado en `main.tscn`) con destello de
   estrella y lens flare del sol y una viñeta ligera. Sirve para cualquier área con un sol.
+- **Materiales**: biblioteca común en `assets/materials/` (ver su `README.md`): blanco lacado,
+  blanco satinado, cromo, aluminio cepillado, menta, lima (solo acentos), cristal claro y
+  cian, alfombra de pelo largo en espiral y los emisivos de LED y focos. Marcos de ventana y
+  de pantalla: aro de cromo con un aro fino lima por dentro.
 - **LED**: `LedStrip` (tubo emisivo y, si hace falta, luces pequeñas que bañan el suelo).
   Los LED de la propia sala (tragaluz, zócalo, columna, focos) los genera `RoomLeds` a partir
   de la geometría de la sala.

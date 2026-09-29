@@ -24,6 +24,7 @@ scenes/
 scripts/
   autoload/            # singletons (música, transiciones, estado global)
 assets/
+  materials/           # biblioteca de materiales compartidos (ver su README.md)
   audio/music/
   audio/sfx/
   models/
@@ -60,7 +61,7 @@ CREDITS.md             # autor, fuente y licencia de cada asset externo
 - Los modelos se crean en Blender vía MCP y se exportan a `.glb` en `assets/models/<area>/`.
 - Los `.blend` fuente se guardan en `assets/models/<area>/source/` (con un `.gdignore` para que Godot no intente importarlos).
 - Escala real en metros; origen del objeto en la base.
-- Los materiales finales (glossy, cristal) se ajustan en Godot para que coincidan con el resto de la sala: `.tres` en `assets/models/<area>/materials/`, asignados como materiales externos en el `.import` del `.glb`.
+- Los materiales finales se asignan en Godot como materiales externos en el `.import` del `.glb`. Primero se usan los de la biblioteca `assets/materials/` (blanco lacado, cromo, cristal, menta, lima…); solo los propios de un modelo van en `assets/models/<area>/materials/`.
 - Los assets de Poly Haven u otras fuentes se registran en `CREDITS.md`.
 
 ## Rendimiento

@@ -13,12 +13,15 @@ extends Node3D
 @export var glass_thickness: float = 0.04
 @export var cap_height: float = 0.3         # Altura de base y remate
 @export var cap_overhang: float = 0.1       # Cuánto sobresale la base respecto al cristal
+@export var accent_radius: float = 0.018    # Grosor del aro de acento de la base (0 = sin aro)
+@export_range(0.0, 90.0, 1.0) var accent_angle_deg: float = 40.0   # Posición sobre el borde (0 = ecuador, 90 = arriba)
 
 @export_group("Materiales")
 @export var glass_material: Material
 @export var water_material: Material
 @export var bubble_material: Material
 @export var cap_material: Material
+@export var accent_material: Material     # Aro fino en el borde de la base
 @export var glow_material: Material
 @export var caustics_material: Material
 
@@ -95,6 +98,18 @@ func _build() -> void:
 	# Base y remate: toro + disco de relleno
 	_build_cap("BaseCap", rt, cap_outer, rt)
 	_build_cap("TopCap", rt, cap_outer, column_height - rt)
+
+	# Aro fino de acento sobre el borde exterior de la base, medio metido en ella
+	if accent_material and accent_radius > 0.0:
+		var a := deg_to_rad(accent_angle_deg)
+		var reach := rt + accent_radius * 0.3
+		var ring_r := cap_outer - rt + reach * cos(a)
+		var accent := TorusMesh.new()
+		accent.inner_radius = ring_r - accent_radius
+		accent.outer_radius = ring_r + accent_radius
+		accent.rings = 96
+		accent.ring_segments = 10
+		_add_mesh("BaseAccent", accent, accent_material, Vector3(0, rt + reach * sin(a), 0), false)
 
 	# Anillo emisivo cian en la base
 	var glow_mesh := TorusMesh.new()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_shell.gd" id="1_shell"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_window.gd" id="1_window"]
@@ -10,35 +10,21 @@
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/living/living.tscn" id="6_living"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/computers.tscn" id="7_computers"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/computers/aquarium_screen.gd" id="8_screen"]
-[ext_resource type="Material" path="res://assets/models/area_01/materials/living_white.tres" id="9_white"]
+[ext_resource type="Material" path="res://assets/materials/white_lacquer.tres" id="9_white"]
 [ext_resource type="PackedScene" path="res://scenes/areas/area_01/computers/aquarium/aquarium.tscn" id="10_aquarium"]
 [ext_resource type="Script" path="res://scenes/areas/area_01/room_leds.gd" id="11_leds"]
 [ext_resource type="Script" path="res://scenes/fx/planar_reflection.gd" id="16_planar"]
-[ext_resource type="Material" path="res://scenes/fx/materials/led_cyan.tres" id="12_cyan"]
-[ext_resource type="Material" path="res://scenes/fx/materials/led_green.tres" id="13_green"]
-[ext_resource type="Material" path="res://scenes/fx/materials/downlight.tres" id="14_downlight"]
-[ext_resource type="Material" path="res://assets/models/area_01/materials/living_chrome.tres" id="15_chrome"]
+[ext_resource type="Material" path="res://assets/materials/led_cyan.tres" id="12_cyan"]
+[ext_resource type="Material" path="res://assets/materials/led_green.tres" id="13_green"]
+[ext_resource type="Material" path="res://assets/materials/downlight.tres" id="14_downlight"]
+[ext_resource type="Material" path="res://assets/materials/chrome.tres" id="15_chrome"]
+[ext_resource type="Material" path="res://assets/materials/lime_gloss.tres" id="17_lime"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
 shader = ExtResource("2_leaf")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wall"]
 shader = ExtResource("3_wall")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rim"]
-albedo_color = Color(0.86, 0.95, 1, 1)
-roughness = 0.1
-clearcoat_enabled = true
-clearcoat = 0.7
-clearcoat_roughness = 0.1
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frame"]
-albedo_color = Color(0.52, 0.9, 0.56, 1)
-metallic = 0.15
-roughness = 0.08
-clearcoat_enabled = true
-clearcoat = 1.0
-clearcoat_roughness = 0.05
 
 [sub_resource type="Resource" id="Resource_window_living"]
 script = ExtResource("1_window")
@@ -175,8 +161,9 @@ omni_range = 18.0
 script = ExtResource("1_shell")
 floor_material = SubResource("ShaderMaterial_floor")
 wall_material = SubResource("ShaderMaterial_wall")
-rim_material = SubResource("StandardMaterial3D_rim")
-frame_material = SubResource("StandardMaterial3D_frame")
+rim_material = ExtResource("9_white")
+frame_material = ExtResource("15_chrome")
+frame_accent_material = ExtResource("17_lime")
 windows = Array[ExtResource("1_window")]([SubResource("Resource_window_living"), SubResource("Resource_window_back")])
 waves = Array[ExtResource("1_wave")]([SubResource("Resource_wave_living"), SubResource("Resource_wave_south"), SubResource("Resource_wave_west")])
 
@@ -223,7 +210,8 @@ transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 
 
 [node name="AquariumScreen" type="Node3D" parent="."]
 script = ExtResource("8_screen")
-frame_material = ExtResource("9_white")
+frame_material = ExtResource("15_chrome")
+accent_material = ExtResource("17_lime")
 
 [node name="AquariumViewport" type="SubViewport" parent="AquariumScreen"]
 own_world_3d = true

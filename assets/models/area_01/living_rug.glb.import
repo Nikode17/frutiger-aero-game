@@ -43,8 +43,8 @@ _subresources={
 "materials": {
 "living_rug": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_rug.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_rug.tres"
+"use_external/fallback_path": "res://assets/materials/shag_rug_swirl.tres",
+"use_external/path": "res://assets/materials/shag_rug_swirl.tres"
 }
 }
 }

@@ -1,9 +1,0 @@
-[gd_resource type="StandardMaterial3D" format=3]
-
-[resource]
-resource_name = "living_mint"
-albedo_color = Color(0.42, 0.92, 0.66, 1)
-roughness = 0.18
-clearcoat_enabled = true
-clearcoat = 1.0
-clearcoat_roughness = 0.08

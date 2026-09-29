@@ -43,8 +43,8 @@ _subresources={
 "materials": {
 "imac_bezel": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/models/area_01/materials/living_white.tres",
-"use_external/path": "res://assets/models/area_01/materials/living_white.tres"
+"use_external/fallback_path": "res://assets/materials/white_lacquer.tres",
+"use_external/path": "res://assets/materials/white_lacquer.tres"
 },
 "imac_shell": {
 "use_external/enabled": true,

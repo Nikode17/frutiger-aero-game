@@ -2,8 +2,9 @@
 class_name AquariumScreen
 extends Node3D
 ## Pantalla grande del fondo del entrante: superficie curvada que sigue la pared real
-## (se calcula a partir de RoomShell), esquinas muy redondeadas, marco tubular blanco y
-## unas luces azules suaves que iluminan la mesa y el suelo. El contenido sale del
+## (se calcula a partir de RoomShell), esquinas muy redondeadas, marco tubular (aro exterior
+## metálico y aro fino interior de color) y unas luces azules suaves que iluminan la mesa y
+## el suelo. El contenido sale del
 ## SubViewport hijo (escena del acuario).
 
 @export_tool_button("Reconstruir pantalla") var rebuild_action: Callable = _build
@@ -24,6 +25,9 @@ extends Node3D
 @export_group("Marco")
 @export var frame_radius: float = 0.035
 @export var frame_material: Material
+## Aro fino interior, pegado al borde interior del marco (0 = sin aro)
+@export var accent_radius: float = 0.012
+@export var accent_material: Material
 @export_range(24, 400) var frame_points: int = 160
 
 @export_group("Imagen")
@@ -97,11 +101,20 @@ func _build() -> void:
 
 	var frame := MeshInstance3D.new()
 	frame.name = "Frame"
-	frame.mesh = _build_frame_mesh()
+	frame.mesh = _build_frame_mesh(0.0, frame_radius, 0.0)
 	frame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if frame_material:
 		frame.material_override = frame_material
 	_add_generated(frame)
+
+	if accent_material and accent_radius > 0.0:
+		var accent := MeshInstance3D.new()
+		accent.name = "FrameAccent"
+		# Medio metido bajo el borde interior del marco y un poco por delante de la imagen
+		accent.mesh = _build_frame_mesh(frame_radius + accent_radius * 0.6, accent_radius, accent_radius * 0.4)
+		accent.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		accent.material_override = accent_material
+		_add_generated(accent)
 
 	for k in light_count:
 		var light := OmniLight3D.new()
@@ -200,15 +213,18 @@ func _build_screen_mesh() -> ArrayMesh:
 	return st.commit()
 
 
-## Tubo que sigue el contorno redondeado de la pantalla.
-func _build_frame_mesh() -> ArrayMesh:
+## Tubo de radio `radius` que sigue el contorno redondeado de la pantalla, encogido
+## `inset` metros y separado `offset` metros de la pantalla hacia la sala.
+func _build_frame_mesh(inset: float, radius: float, offset: float) -> ArrayMesh:
 	var h := top_height - bottom_height
-	var rc := minf(corner_radius, minf(width, h) * 0.5)
+	var rc0 := minf(corner_radius, minf(width, h) * 0.5)
+	var rc := maxf(rc0 - inset, 0.01)
 	# Contorno en (s, y): cuatro esquinas redondeadas unidas por tramos rectos
 	var outline: Array[Vector2] = []
+	var lo := inset + rc
 	var corners := [
-		[Vector2(width - rc, h - rc), 0.0], [Vector2(rc, h - rc), PI * 0.5],
-		[Vector2(rc, rc), PI], [Vector2(width - rc, rc), PI * 1.5],
+		[Vector2(width - lo, h - lo), 0.0], [Vector2(lo, h - lo), PI * 0.5],
+		[Vector2(lo, lo), PI], [Vector2(width - lo, lo), PI * 1.5],
 	]
 	var per_corner := maxi(frame_points / 8, 4)
 	var per_side := maxi(frame_points / 8, 4)
@@ -226,7 +242,7 @@ func _build_frame_mesh() -> ArrayMesh:
 	var points := PackedVector3Array()
 	var surf_normals := PackedVector3Array()
 	for q in outline:
-		points.append(_point(q.x, bottom_height + q.y, wall_offset))
+		points.append(_point(q.x, bottom_height + q.y, wall_offset + offset))
 		surf_normals.append(_normal(q.x, bottom_height + q.y))
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -241,10 +257,10 @@ func _build_frame_mesh() -> ArrayMesh:
 		for m in rs:
 			var beta := TAU * float(m) / float(rs)
 			var radial := n1 * cos(beta) + n2 * sin(beta)
-			verts.append(points[k] + radial * frame_radius)
+			verts.append(points[k] + radial * radius)
 			norms.append(radial)
 			st.set_normal(radial)
-			st.add_vertex(points[k] + radial * frame_radius)
+			st.add_vertex(points[k] + radial * radius)
 	for k in count:
 		var k2 := (k + 1) % count
 		for m in rs:
