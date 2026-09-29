@@ -54,6 +54,7 @@ CREDITS.md             # autor, fuente y licencia de cada asset externo
   Revisar la salida en busca de errores de script o recursos faltantes.
 - Commits pequeños con mensajes claros en español (`feat: controlador en primera persona`).
 - No editar ni subir la carpeta `.godot/` (caché).
+- Si se tocan `.glb` o sus `.import` desde fuera, cerrar antes el editor de Godot o, después, recargar el proyecto sin guardar las escenas abiertas. Al reimportar N `.glb` a la vez con `main.tscn` abierto, el editor (Godot 4.7.2) muestra N−1 veces "No path can be resolved between the nodes …/Main and Area01 (not inside tree)": es un fallo del editor e inofensivo.
 - Si falta un asset (música, textura), dejar un placeholder y avisar de qué archivo hay que poner y dónde.
 - Cada asset externo que se añada se registra en `CREDITS.md`.
 
