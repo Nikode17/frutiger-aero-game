@@ -2,7 +2,8 @@ class_name CameraFx
 extends Node
 ## Efectos de cámara comunes a las áreas con sol: destello de estrella y lens flare
 ## (quad a pantalla completa con sun_flare.gdshader, que se oculta solo con lo que tapa
-## el sol) y una viñeta ligera. Sigue a la cámara activa del viewport en cada frame.
+## el sol), una viñeta ligera y un enfoque suave que compensa el TAA cuando está activo.
+## Sigue a la cámara activa del viewport en cada frame.
 
 ## DirectionalLight3D que hace de sol. Si está vacío, se usa el primero que haya en la escena.
 @export var sun_path: NodePath
@@ -18,6 +19,10 @@ extends Node
 @export_group("Viñeta")
 @export var vignette_enabled: bool = true
 @export_range(0.0, 1.0, 0.01) var vignette_strength: float = 0.25
+
+@export_group("Enfoque")
+## Enfoque del pase final; solo se aplica con TAA, que suaviza la imagen
+@export_range(0.0, 1.5, 0.05) var taa_sharpen: float = 0.8
 
 @onready var _flare: MeshInstance3D = $Flare
 @onready var _vignette: CanvasItem = $Vignette/Rect
@@ -35,10 +40,10 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	_vignette.visible = vignette_enabled
 	var mat := _vignette.material as ShaderMaterial
 	if mat:
-		mat.set_shader_parameter("strength", vignette_strength)
+		mat.set_shader_parameter("strength", vignette_strength if vignette_enabled else 0.0)
+		mat.set_shader_parameter("sharpen", taa_sharpen if get_viewport().use_taa else 0.0)
 	_update_flare()
 
 

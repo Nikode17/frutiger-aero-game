@@ -67,6 +67,9 @@ Valores de partida (área 1, `scenes/areas/area_01/area_01.tscn`):
   algo por encima del blanco de las paredes (~1,25) para que brillen reflejos, sol y LED sin
   velar la sala, saturación y contraste subidos en `adjustment`. Niebla volumétrica poco
   densa e iluminada casi solo por el sol: si se sube mucho, la imagen se vuelve lechosa.
+- **Antialiasing**: TAA (estabiliza el brillo de detalles finos y reflejos al girar) con un
+  enfoque suave en `CameraFx` para no perder nitidez. Calidad Alta/Media/Baja con F4
+  (`scripts/autoload/graphics_quality.gd`); Alta usa los valores de la escena.
 - **Cámara**: `scenes/fx/camera_fx.tscn` (instanciado en `main.tscn`) con destello de
   estrella y lens flare del sol y una viñeta ligera. Sirve para cualquier área con un sol.
 - **LED**: `LedStrip` (tubo emisivo y, si hace falta, luces pequeñas que bañan el suelo).

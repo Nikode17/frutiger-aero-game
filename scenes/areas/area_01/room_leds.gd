@@ -27,9 +27,9 @@ extends Node3D
 @export var skirting_height: float = 0.05         # altura de la tira sobre el suelo
 @export var skirting_led_radius: float = 0.007
 @export var skirting_gap: float = 0.005           # separación de la superficie
-@export_range(0, 64) var skirting_lights: int = 36
-@export var skirting_light_energy: float = 0.12
-@export var skirting_light_range: float = 1.5
+@export_range(0, 64) var skirting_lights: int = 24
+@export var skirting_light_energy: float = 0.13
+@export var skirting_light_range: float = 1.9
 @export var skirting_light_inset: float = 0.3     # las luces van algo por dentro para bañar el suelo
 
 @export_group("Columna")
@@ -209,6 +209,7 @@ func _build_skirting_lights(pts: PackedVector3Array, col: Color) -> void:
 		light.omni_range = skirting_light_range
 		light.omni_attenuation = 1.5
 		light.shadow_enabled = false
+		LedStrip.setup_light(light)
 		_add_generated(light)
 
 
@@ -278,4 +279,8 @@ func _build_spots() -> void:
 		spot.spot_attenuation = spot_attenuation
 		spot.spot_angle_attenuation = 0.9
 		spot.shadow_enabled = false
+		spot.light_volumetric_fog_energy = 0.0
+		spot.distance_fade_enabled = true
+		spot.distance_fade_begin = 16.0
+		spot.distance_fade_length = 4.0
 		root.add_child(spot)

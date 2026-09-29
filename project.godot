@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 MusicManager="*res://scripts/autoload/music_manager.gd"
 DebugOverlay="*res://scripts/autoload/debug_overlay.gd"
+GraphicsQuality="*res://scripts/autoload/graphics_quality.gd"
 
 [display]
 
@@ -64,6 +65,11 @@ release_mouse={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194305,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+cycle_quality={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194335,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
 toggle_fps={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194334,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
@@ -72,4 +78,9 @@ toggle_fps={
 
 [rendering]
 
-anti_aliasing/quality/screen_space_aa=1
+anti_aliasing/quality/screen_space_aa=0
+anti_aliasing/quality/use_taa=true
+global_illumination/gi/use_half_resolution=true
+environment/glow/upscale_mode=0
+environment/volumetric_fog/volume_size=48
+environment/volumetric_fog/volume_depth=48

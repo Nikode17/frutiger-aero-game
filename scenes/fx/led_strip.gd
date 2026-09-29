@@ -26,6 +26,11 @@ extends Node3D
 @export var light_offset: Vector3 = Vector3.ZERO   # desplazamiento de cada luz respecto a la tira
 
 const META_GENERATED := &"led_strip_generated"
+## Grupo de las luces pequeñas de las tiras (el selector de calidad las apaga en Baja)
+const LIGHT_GROUP := &"led_lights"
+## Distancia a la cámara a partir de la cual las luces se apagan (el tubo sigue brillando)
+const LIGHT_FADE_BEGIN := 12.0
+const LIGHT_FADE_LENGTH := 4.0
 
 
 func _ready() -> void:
@@ -204,4 +209,15 @@ func _build_lights(path: PackedVector3Array) -> void:
 		light.omni_range = light_range
 		light.omni_attenuation = light_attenuation
 		light.shadow_enabled = false
+		setup_light(light)
 		_add_generated(light)
+
+
+## Ajustes comunes de las luces LED: sin niebla volumétrica (no se ven y encarecen la
+## niebla), apagado por distancia y grupo para el selector de calidad.
+static func setup_light(light: Light3D) -> void:
+	light.light_volumetric_fog_energy = 0.0
+	light.distance_fade_enabled = true
+	light.distance_fade_begin = LIGHT_FADE_BEGIN
+	light.distance_fade_length = LIGHT_FADE_LENGTH
+	light.add_to_group(LIGHT_GROUP)
